@@ -19,6 +19,39 @@ export const MainNews: React.FC = () => {
   useEffect(() => {
     const getNews = async () => {
       try {
+        // ---------------------------
+        // Evita chamadas na fase dev
+        // ---------------------------
+        if (process.env.NODE_ENV === "development") {
+          const stored = sessionStorage.getItem("newsData");
+          if (stored) {
+            console.log("🗂️ Usando notícias armazenadas no sessionStorage (dev)");
+            setArticles(JSON.parse(stored));
+            return;
+          } else {
+            console.log("📡 Buscando notícias pela primeira vez (dev)");
+            const response = await fetch(
+              `${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_GENERAL}`
+            );
+            if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+            const data = await response.json();
+
+            if (!data.articles || !Array.isArray(data.articles))
+              throw new Error("Resposta inválida da API");
+
+            const validArticles = data.articles.filter(
+              (a: Article) => a.title !== "[Removed]" && a.description
+            );
+
+            sessionStorage.setItem("newsData", JSON.stringify(validArticles));
+            setArticles(validArticles);
+            return;
+          }
+        }
+
+        // ---------------------------
+        // Em produção → sempre usa API real
+        // ---------------------------
         const response = await fetch(
           `${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_GENERAL}`
         );
