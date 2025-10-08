@@ -1,0 +1,95 @@
+.weatherContainer { 
+    background-color: rgba(52, 121, 150, 0.144);
+    border: 1px solid rgba(128, 128, 128, 0.226);
+    margin: 0 0 1rem 0;
+    color: #343434;
+}
+
+.weatherTitle { 
+    border-bottom: 1px solid rgba(128, 128, 128, 0.226);
+    padding: 15px 25px;
+}
+
+.weatherWrap { 
+    padding: 15px 25px;
+}
+
+.previsaoLocation {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1.5rem;
+}
+
+.previsaoTempWrap {
+    display: flex;
+    align-items: center;
+    font-size: 3em;
+    font-weight: bold;
+}
+
+.previsaoTempWrap img {
+    width: 2em;
+}
+
+.previsaoHumidity {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.previsaoHumidity svg {
+    font-size: 1.5em;
+}
+
+.previsaoFooter {
+    padding: 15px 25px;
+    border-top: 1px solid rgba(128, 128, 128, 0.226);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.226);
+}
+
+.previsaoFooter a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #666;
+}
+
+.previsaoFooter a:hover {
+    color: #4b4b4b;
+} 
+
+.previsaoFooter svg {
+    font-size: 1.5em;
+}
+
+/* Estilos para mensagens de carregamento/erro */
+.message {
+    padding: 15px 25px;
+    font-style: italic;
+    color: #555;
+}
+
+.errorMessage {
+    color: #d9534f; 
+    font-weight: bold;
+}
+
+
+@media screen and (max-width: 1070px) {
+    .weatherWrap { 
+        display: flex;
+        justify-content: space-between; 
+        padding: 0px 25px;
+    }
+}
+@media screen and (max-width: 650px) {
+    .weatherWrap { 
+        display: block;
+        padding: 15px 25px;
+    }
+}
