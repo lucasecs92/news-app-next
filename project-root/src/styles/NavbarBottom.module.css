@@ -1,0 +1,107 @@
+.navBottomWrap {
+  width: 100%;
+  background-color: #fff;
+  padding: 0.8rem 0;
+  font-family: "Ubuntu Mono", monospace;
+  border-bottom: 1.5px solid #343434;
+
+  position: static;
+  transition: position 0.5s, filter 0.5s;
+  z-index: 2;
+}
+
+.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 0.8rem 18.5%;
+  border-bottom: none;
+}
+
+.fixed::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px; /* Altura do border-bottom */
+  background-color: #00000057;
+  filter: blur(1px);
+}
+
+.menuIcons {
+  display: none;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  padding: 1rem 0 0.5rem 0;
+}
+
+.ulList {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  list-style: none;
+  padding: 0;
+}
+
+.ulListItem {
+  padding: 0;
+}
+
+.ulListItem a {
+  text-decoration: none;
+  color: black;
+}
+
+.ulListItem a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  text-decoration-thickness: 2px;
+}
+
+@media screen and (max-width: 1775px) {
+  .fixed {
+    padding: 0.8rem 14%;
+  }
+}
+@media screen and (max-width: 1575px) {
+  .fixed {
+    padding: 0.8rem 11%;
+  }
+}
+@media screen and (max-width: 1445px) {
+  .fixed {
+    padding: 0.8rem 7%;
+  }
+}
+@media screen and (max-width: 1375px) {
+  .fixed {
+    padding: 0.8rem 6%;
+  }
+}
+@media screen and (max-width: 1275px) {
+  .fixed {
+    padding: 0.8rem 4.5%;
+  }
+}
+@media screen and (max-width: 870px) {
+  .navBottomWrap {
+    padding: 0;
+  }
+  .fixed {
+    padding: 0 4.5% 0 4.5%;
+  }
+  .menuIcons {
+    display: block;
+  }
+  .ulList {
+    flex-direction: column;
+  }
+  .ulListItem {
+    padding: 2rem 0;
+    border-bottom: 1px solid #ddd;
+  }
+}

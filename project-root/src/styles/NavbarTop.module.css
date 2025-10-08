@@ -1,0 +1,58 @@
+.navbarTopWrap {
+  width: 100%;
+  padding: 0.5rem 0;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navDate {
+  font-size: 0.9rem;
+}
+
+.navSearch {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+}
+
+.navSearch svg {
+  font-size: 1.7em;
+  padding: 5px 5px 5px 3px;
+  color: gray;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.navSearch svg:hover {
+  background-color: #ddd;
+}
+
+.searchField {
+  padding: 4px 7px;
+  width: 100%;
+  border: 1px solid black;
+  border-radius: 3px;
+  color: gray;
+}
+
+.searchField::placeholder {
+  font-size: 0.8rem;
+}
+
+.navDateWrap.hidden {
+  display: none;
+}
+
+.navSearch.expanded {
+  width: 100%;
+}
+
+@media screen and (max-width: 870px) {
+  .navDate {
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+}
