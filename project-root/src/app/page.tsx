@@ -4,6 +4,7 @@ import styles from "../styles/index.module.css";
 import { NavbarTop } from "../components/NavbarTop"; 
 import { NavbarMain } from "../components/NavbarMain";
 import NavbarBottom from "../components/NavbarBottom";
+import { MainNews } from "@/components/MainNews";
 
 export default function Home() {
   return (
@@ -15,7 +16,7 @@ export default function Home() {
       </header>
 
       <main className={styles.mainContent}>
-        <section id="main-news"></section>
+        <MainNews />
         <aside id="aside-wrap">
           <section id="aside-weather"></section>
           <p id="aside-most-read">Mais Lidas</p>

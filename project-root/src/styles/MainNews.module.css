@@ -1,0 +1,55 @@
+.mainNewsCard {
+    border-bottom: 1px solid #343434;
+    padding: 0 0 5rem 0;
+    margin-bottom: 2rem;
+}
+
+.cardBody {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 1.5rem;
+}
+
+.mainNewsImg {
+    width: 62%;
+}
+
+.mainNewsText {
+    display: flex;
+    flex-direction: column;
+}
+
+.mainNewsTitle {
+    font-size: 1.4rem;
+    color: #333;
+}
+
+.mainNewsTitle:hover {
+    color: #343434ce;
+    cursor: pointer;
+}
+
+.mainNewsDescription {
+    font-size: 0.9rem;
+    color: #666;
+    padding: 15px 0;
+}
+
+.mainNewsTimePublished {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+@media screen and (max-width: 750px) {
+    .cardBody {
+        flex-direction: column-reverse;
+    }
+
+    .mainNewsImg {
+        width: 100%;
+    }
+
+    .mainNewsText {
+        text-align: justify;
+    }
+}
