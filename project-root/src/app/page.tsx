@@ -14,7 +14,7 @@ export default function Home() {
         <NavbarBottom />
       </header>
 
-      <main id="main-content">
+      <main className={styles.mainContent}>
         <section id="main-news"></section>
         <aside id="aside-wrap">
           <section id="aside-weather"></section>
@@ -22,6 +22,15 @@ export default function Home() {
           <section id="aside-news"></section>
         </aside>
       </main>
+
+      {/* <main className={styles.mainContent}>
+        <section className={styles.mainNews}></section>
+        <aside className={styles.asideWrap}>
+          <section className={styles.asideWeather}></section>
+          <p className={styles.asideMostRead}>Mais Lidas</p>
+          <section className={styles.asideNews}></section>
+        </aside>
+      </main> */}
 
       <footer>
         <section id="footer"></section>
