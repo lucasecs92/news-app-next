@@ -16,8 +16,10 @@ export default function Home() {
       </header>
 
       <main className={styles.mainContent}>
-        <MainNews />
-        <aside id="aside-wrap">
+        <section className={styles.mainNews}>
+          <MainNews />
+        </section>
+        <aside className={styles.asideWrap}>
           <section id="aside-weather"></section>
           <p id="aside-most-read">Mais Lidas</p>
           <section id="aside-news"></section>
