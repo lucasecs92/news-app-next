@@ -6,6 +6,7 @@ import { NavbarMain } from "../components/NavbarMain";
 import NavbarBottom from "../components/NavbarBottom";
 import { MainNews } from "@/components/MainNews";
 import Weather from "@/components/Weather";
+import NewsAside from "@/components/NewsAside";
 
 export default function Home() {
   return (
@@ -22,8 +23,8 @@ export default function Home() {
         </section>
         <aside className={styles.asideWrap}>
           <Weather />
-          <p id="aside-most-read">Mais Lidas</p>
-          <section id="aside-news"></section>
+          <p className={styles.asideMostRead}>Mais Lidas</p>
+          <NewsAside />
         </aside>
       </main>
 
