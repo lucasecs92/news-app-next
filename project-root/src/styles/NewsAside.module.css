@@ -1,15 +1,18 @@
+/* NewsAside.module.css */
 .newsCardAside {
     border-top: 1px solid #66666633;
 }
 
-.cardBodyAside { 
+.cardBodyAside {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Padrão: Imagem acima do texto */
     padding: 1rem 0;
 }
 
 .newsImgAside {
     width: 100%;
+    height: auto; /* Garante que a imagem se ajusta à largura */
+    object-fit: cover;
 }
 
 .newsTextAside {
@@ -25,7 +28,7 @@
     font-size: 1.5rem;
     font-weight: 400;
     color: #333;
-    padding: 10px 0; 
+    padding: 10px 0;
 }
 
 .newsTitleAside:hover {
@@ -33,7 +36,6 @@
     cursor: pointer;
 }
 
-/* Corrigido o erro de digitação aqui */
 .newsTextAside .newsDescription {
     font-size: 1rem;
     color: #666;
@@ -45,45 +47,177 @@
     padding-top: 10px;
 }
 
-/* Exemplo de como as media queries poderiam ser usadas para estilos gerais */
+/* ========================================= */
+/* NOVOS ESTILOS PARA CARDS PAGINADOS (CARROSSEL) */
+/* ========================================= */
+
+.carouselContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0;
+    border-top: 1px solid #66666633;
+    margin-top: 1rem;
+}
+
+.carouselViewport {
+    width: 100%;
+    overflow: hidden; /* Isso esconde os cards que estão fora da visualização */
+}
+
+.carouselInnerTrack {
+    display: flex;
+    /* Adiciona a transição para o efeito de slide */
+    transition: transform 0.5s ease-in-out;
+    gap: 20px; /* Espaço entre os cards */
+    padding-bottom: 15px; /* Espaço entre os cards e os botões */
+}
+
+.carouselNavigationButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.carouselNavigationButtons button {
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.carouselNavigationButtons button:hover:not(:disabled) {
+    background: #e0e0e0;
+}
+
+.carouselNavigationButtons button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Estilos para os cards individuais do carrossel */
+.smallArticleLayoutPaged {
+    /* flex-shrink: 0 é crucial para que os cards não encolham e o slide funcione */
+    flex-shrink: 0;
+    border: none;
+    padding: 0;
+    border-top: none;
+    /* A largura agora é controlada dinamicamente via `style` no componente React,
+       mas mantemos aqui um valor padrão para o desktop caso a prop não seja aplicada
+       ou para fins de referência. O valor calc(50% - 10px) assume um gap de 20px. */
+    flex-basis: calc(50% - 10px);
+    max-width: calc(50% - 10px);
+}
+
+
+.smallArticleLayoutPaged .cardBodyAside {
+    flex-direction: column;
+    padding: 0;
+    align-items: center;
+    text-align: center;
+}
+
+.smallArticleLayoutPaged .newsImgAside {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+.smallArticleLayoutPaged .newsAuthor {
+    font-size: 0.85rem;
+    padding-bottom: 3px;
+}
+
+.smallArticleLayoutPaged .newsTitleAside {
+    font-size: 1.1rem;
+    padding: 0;
+    line-height: 1.3;
+}
+
+.smallArticleLayoutPaged .newsDescription {
+    display: none; /* Descrição oculta para estes cards */
+}
+
+.smallArticleLayoutPaged .newsTimePublished {
+    font-size: 0.75rem;
+    padding-top: 5px;
+    color: #999;
+}
+
+
+/* Media Queries existentes e adaptadas */
 @media screen and (max-width: 1070px) {
-    .cardBodyAside {
-        /* Exemplo: Ajustar padding geral em telas menores */
-        padding: 1.5rem 3rem;
+    .carouselContainer {
+        padding: 1rem;
     }
-    .newsImgAside {
-        /* Ajustar dimensões da imagem em telas menores */
-        height: 15vh;
-        width: 50%;
+    .carouselInnerTrack {
+        gap: 15px;
     }
-    .newsTextAside {
-        /* Ajustar alinhamento do texto em telas menores */
-        text-align: center;
-        padding: 1rem 3rem;
+    .smallArticleLayoutPaged {
+        flex-basis: calc(50% - 7.5px); /* Ajusta para 2 cards e gap de 15px */
+        max-width: calc(50% - 7.5px);
     }
-    .newsTitleAside {
-        /* Ajustar padding do título */
-        padding: 0;
+    .carouselNavigationButtons {
+        margin-top: 15px;
     }
 }
 
 @media screen and (max-width: 750px) {
-    .cardBodyAside {
-        flex-direction: column-reverse; /* Exemplo */
-        padding: 1.5rem 0;
+    .carouselContainer {
+        padding: 1rem 0;
     }
-    .newsImgAside {
-        height: 20vh;
-        width: auto;
+    .carouselInnerTrack {
+        /* Para mobile, o `effectiveCardsPerPage` será 1, então o flex-basis será 100%.
+           Podemos manter o gap aqui se quisermos um espaço entre cards mesmo com 1 por página. */
+        gap: 15px; /* Ou 0px se preferir sem gap em mobile */
     }
-    .newsTextAside {
-        text-align: start;
-        padding: 1rem 0rem;
+    /* `smallArticleLayoutPaged` terá `flex-basis: 100%` via React style.
+       Ajuste visual do conteúdo interno para mobile: */
+    .smallArticleLayoutPaged .cardBodyAside {
+        flex-direction: row; /* Imagem ao lado do texto */
+        align-items: flex-start;
+        text-align: left;
+        gap: 15px;
+        padding: 0;
+    }
+    .smallArticleLayoutPaged .newsImgAside {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+    .smallArticleLayoutPaged .newsTitleAside {
+        font-size: 1rem;
+    }
+    .smallArticleLayoutPaged .newsAuthor,
+    .smallArticleLayoutPaged .newsTimePublished {
+        font-size: 0.75rem;
+    }
+    .carouselNavigationButtons {
+        margin-top: 15px;
+        gap: 10px;
+    }
+    .carouselNavigationButtons button {
+        padding: 8px 12px;
+        font-size: 1rem;
     }
 }
 
 @media screen and (max-width: 550px) {
-    .newsImgAside {
-        padding: 1rem 0;
+    .carouselInnerTrack {
+        gap: 10px; /* Menor gap em telas menores */
+    }
+    .smallArticleLayoutPaged .newsImgAside {
+        width: 70px;
+        height: 70px;
+    }
+    .smallArticleLayoutPaged .newsTitleAside {
+        font-size: 0.9rem;
     }
 }
