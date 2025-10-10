@@ -82,11 +82,15 @@
 .carouselNavigationButtons button {
     background: #f0f0f0;
     border: 1px solid #ddd;
-    padding: 10px 15px;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.5rem;
     border-radius: 50%;
     transition: background-color 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .carouselNavigationButtons button:hover:not(:disabled) {
@@ -117,14 +121,12 @@
     flex-direction: column;
     padding: 0;
     align-items: center;
-    text-align: center;
 }
 
 .smallArticleLayoutPaged .newsImgAside {
     width: 150px;
     height: 150px;
     object-fit: cover;
-    border-radius: 4px;
     margin-bottom: 10px;
     flex-shrink: 0;
 }

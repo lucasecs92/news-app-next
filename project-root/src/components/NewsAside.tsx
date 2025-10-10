@@ -5,6 +5,8 @@ import { useEffect, useState, useRef } from "react";
 import styles from "../styles/NewsAside.module.css";
 import { API_URL, API_KEY, COUNTRY, CATEGORY_ENTERTAINMENT } from "../utils/config";
 import { timeSince, displayError } from "../utils/utils";
+import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
+
 
 interface Article {
   title: string;
@@ -232,10 +234,10 @@ export default function NewsAside() {
           </div>
           <div className={styles.carouselNavigationButtons}>
             <button onClick={handlePrevPage} disabled={currentPage === 0} aria-label="Notícia Anterior">
-              &lt;
+              <MdNavigateBefore />
             </button>
             <button onClick={handleNextPage} disabled={currentPage >= totalCarouselPages - 1} aria-label="Próxima Notícia">
-              &gt;
+              <MdNavigateNext />
             </button>
           </div>
         </div>
