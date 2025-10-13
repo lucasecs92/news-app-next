@@ -5,19 +5,19 @@
 
 .cardBodyAside {
     display: flex;
-    flex-direction: column; /* Padrão: Imagem acima do texto */
+    flex-direction: column;
     padding: 1rem 0;
 }
 
 .newsImgAside {
     width: 100%;
-    height: auto; /* Garante que a imagem se ajusta à largura */
+    height: auto; 
     object-fit: cover;
 }
 
-.newsTextAside {
-    /* Estilos gerais para o container de texto */
-}
+/* .newsTextAside {
+    
+} */
 
 .newsAuthor {
     font-weight: bold;
@@ -66,10 +66,9 @@
 
 .carouselInnerTrack {
     display: flex;
-    /* Adiciona a transição para o efeito de slide */
     transition: transform 0.5s ease-in-out;
-    gap: 20px; /* Espaço entre os cards */
-    padding-bottom: 15px; /* Espaço entre os cards e os botões */
+    gap: 20px;
+    padding-bottom: 15px; 
 }
 
 .carouselNavigationButtons {
@@ -109,9 +108,6 @@
     border: none;
     padding: 0;
     border-top: none;
-    /* A largura agora é controlada dinamicamente via `style` no componente React,
-       mas mantemos aqui um valor padrão para o desktop caso a prop não seja aplicada
-       ou para fins de referência. O valor calc(50% - 10px) assume um gap de 20px. */
     flex-basis: calc(50% - 10px);
     max-width: calc(50% - 10px);
 }
@@ -175,14 +171,10 @@
         padding: 1rem 0;
     }
     .carouselInnerTrack {
-        /* Para mobile, o `effectiveCardsPerPage` será 1, então o flex-basis será 100%.
-           Podemos manter o gap aqui se quisermos um espaço entre cards mesmo com 1 por página. */
-        gap: 15px; /* Ou 0px se preferir sem gap em mobile */
+        gap: 15px; 
     }
-    /* `smallArticleLayoutPaged` terá `flex-basis: 100%` via React style.
-       Ajuste visual do conteúdo interno para mobile: */
     .smallArticleLayoutPaged .cardBodyAside {
-        flex-direction: row; /* Imagem ao lado do texto */
+        flex-direction: row; 
         align-items: flex-start;
         text-align: left;
         gap: 15px;
@@ -213,7 +205,7 @@
 
 @media screen and (max-width: 550px) {
     .carouselInnerTrack {
-        gap: 10px; /* Menor gap em telas menores */
+        gap: 10px; 
     }
     .smallArticleLayoutPaged .newsImgAside {
         width: 70px;
