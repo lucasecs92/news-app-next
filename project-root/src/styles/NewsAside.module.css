@@ -1,81 +1,152 @@
 /* NewsAside.module.css */
-.newsCardAside {
-  border-top: 1px solid #66666633;
+
+/* ========================================= /
+/ ESTILOS BASE (Aplicados a todos os cards ou a elementos comuns) /
+/ ========================================= */
+.newsCardBase {
+  border-top: 1px solid #66666633; /* Borda superior comum para separar cards */
+  padding: 1rem 0; /* Padding vertical comum para o conteúdo do card */
 }
 
-.cardBodyAside {
+.cardBodyBase {
+  display: flex;
+  flex-direction: column; /* Layout padrão: imagem e texto em coluna */
+  gap: 15px; /* Espaçamento padrão entre imagem e container de texto */
+}
+
+/* Variação específica para layout row-reverse (usado pelo grupo "Últimos Quatro") */
+.cardBodyRowReverse {
+  flex-direction: row-reverse;
+  align-items: flex-start; /* Alinha o conteúdo ao topo quando em linha */
+}
+
+.newsTextBase {
+  /* Estilos base para o container de texto */
   display: flex;
   flex-direction: column;
-  padding: 1rem 0;
+  text-align: start;
 }
 
-.newsImgAside {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-}
-
-/* .newsTextAside {
-
-} */
-
-.newsAuthor {
+.newsAuthorBase {
   font-weight: bold;
   color: #66666693;
 }
-
-.newsTitleAside {
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: #333;
-  padding: 10px 0;
+/* Estilo específico para o autor no carrossel */
+.newsAuthorCarousel {
+  font-size: 0.85rem;
+  padding-bottom: 3px;
 }
 
-.newsTitleAside:hover {
+.newsTitleBase {
+  font-size: 1.350rem;
+  font-weight: 500;
+  padding: 10px 0;
+}
+.newsTitleBase:hover {
   color: #343434ce;
   cursor: pointer;
 }
+/* Estilo específico para o título no carrossel */
+.newsTitleCarousel {
+  font-size: 0.95rem;
+  font-weight: bold;
+  padding: 0;
+}
+.newsTitleCarousel:hover {
+  color: #343434ce;
+  cursor: pointer;
+}
+/* Estilo específico para o título dos últimos quatro artigos */
+.newsTitleLastFour {
+  font-size: 0.950rem;
+  padding: 0;
+}
+.newsTitleLastFour:hover {
+  cursor: pointer;
+  color: #343434ce;
+}
 
-.newsTextAside .newsDescription {
-  font-size: 1rem;
+.newsDescriptionBase {
+  font-size: 0.9rem;
   color: #666;
 }
 
-.newsTimePublished {
+.newsTimePublishedBase {
   font-size: 0.8rem;
   color: #666;
   padding-top: 10px;
 }
+/* Estilo específico para a data/hora no carrossel */
+.newsTimePublishedCarousel {
+  font-size: 0.75rem;
+  padding-top: 5px;
+  color: #999;
+}
+
+
+/* Mensagens gerais de carregamento/erro */
+.errorMessage {
+  color: red;
+  padding: 1rem 0;
+  text-align: center;
+}
+.loadingMessage {
+  color: #666;
+  padding: 1rem 0;
+  text-align: center;
+}
+
 
 /* ========================================= /
-/ ESTILOS PARA CARROSSEL (índices 1 a 4) /
+/ GRUPO 1: ARTIGO 1 e ARTIGO 6 (índices 0 e 5) /
+/ Mesmo efeito: imagem grande, descrição completa, layout em coluna /
 / ========================================= */
+.mainArticleLayout {
+  border-top: none;
+  padding: 0 0 1rem 0;
+}
 
+.mainArticleLayout .cardBodyBase {
+  flex-direction: column; /* Garante layout em coluna */
+  gap: 15px; /* Espaço entre imagem e texto */
+}
+
+.newsImgLarge { /* Imagem grande para este grupo */
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  flex-shrink: 0; /* Impede que a imagem encolha */
+}
+
+
+/* ========================================= /
+/ GRUPO 2: ARTIGOS DO CARROSSEL (índices 1, 2, 3, 4) /
+/ Imagem menor, sem descrição visível, layout em coluna (desktop), linha (mobile) /
+/ ========================================= */
 .carouselContainer {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem 0;
-  border-top: 1px solid #66666633;
-  margin-top: 1rem;
+  /* Herda .newsCardBase para border-top e padding no container geral do carrossel */
+  padding-bottom: 0; /* Ajusta o padding para melhor visualização */
 }
 
 .carouselViewport {
   width: 100%;
-  overflow: hidden; /* Isso esconde os cards que estão fora da visualização */
+  overflow: hidden; /* Esconde os cards que estão fora da visualização */
 }
 
 .carouselInnerTrack {
   display: flex;
-  transition: transform 0.5s ease-in-out;
-  gap: 20px;
-  padding-bottom: 15px;
+  transition: transform 0.5s ease-in-out; /* Transição suave para o slide */
+  gap: 20px; /* Espaçamento entre os cards do carrossel */
+  padding-bottom: 15px; /* Espaço entre cards e botões de navegação */
 }
 
 .carouselNavigationButtons {
   display: flex;
   justify-content: flex-end;
   gap: 15px;
-  margin-top: 10px;
+  margin: 10px 0 15px 0;
+  border-bottom: 2px solid #66666633;
+  padding-bottom: 15px;
 }
 
 .carouselNavigationButtons button {
@@ -91,135 +162,138 @@
   justify-content: center;
   align-items: center;
 }
-
 .carouselNavigationButtons button:hover:not(:disabled) {
   background: #e0e0e0;
 }
-
 .carouselNavigationButtons button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-/* Estilos para os cards individuais do carrossel */
-.smallArticleLayoutPaged {
-  flex-shrink: 0; /* É crucial para que os cards não encolham e o slide funcione */
-  border: none;
-  padding: 0;
-  border-top: none;
-  /* flex-basis e max-width são controlados via inline style no componente NewsAside.tsx para dinamismo */
+/* Layout dos cards individuais do carrossel */
+.carouselCardLayout {
+  border-top: none; /* Cards do carrossel não têm borda superior individual */
+  padding: 0; /* Remove padding padrão herdado de .newsCardBase */
+  flex-shrink: 0; /* Impede que os cards encolham */
+  /* flex-basis e max-width são controlados por inline style no componente NewsAside.tsx */
 }
 
-.smallArticleLayoutPaged .cardBodyAside {
-  flex-direction: column; /* Revertido: layout padrão em coluna para desktop */
-  padding: 0;
-  align-items: center;
-  gap: initial; /* Revertido: remove o gap global */
+.carouselCardLayout .cardBodyBase {
+  flex-direction: column; /* Layout padrão para desktop: imagem e texto em coluna */
+  align-items: center; /* Centraliza imagem/texto no desktop */
+  text-align: center; /* Centraliza o texto no desktop */
+  padding: 0; /* Remove padding padrão */
+  gap: 5px; /* Pequeno espaçamento entre os elementos */
 }
 
-.smallArticleLayoutPaged .newsImgAside {
-  width: 150px; /* Revertido: tamanho da imagem do carrossel no desktop */
+.newsImgCarousel { /* Imagem específica para o carrossel */
+  width: 150px;
   height: 150px;
   object-fit: cover;
-  margin-bottom: 10px; /* Revertido: margem inferior para layout em coluna */
   flex-shrink: 0;
 }
 
-.smallArticleLayoutPaged .newsAuthor {
-  font-size: 0.85rem;
-  padding-bottom: 3px;
-}
-
-.smallArticleLayoutPaged .newsTitleAside {
-  font-size: 0.9rem;
-  font-weight: bold;
-  padding: 0;
-  line-height: 1.3;
-}
-
-.smallArticleLayoutPaged .newsDescription {
-  display: none; /* Descrição oculta para estes cards */
-}
-
-.smallArticleLayoutPaged .newsTimePublished {
-  font-size: 0.75rem;
-  padding-top: 5px;
-  color: #999;
-}
 
 /* ========================================= /
-/ NOVOS ESTILOS PARA OS ARTIGOS 7, 8, 9 e 10 (índices 6, 7, 8, 9) /
+/ GRUPO 3: ÚLTIMOS QUATRO ARTIGOS (índices 6, 7, 8, 9) /
+/ Layout row-reverse, imagem pequena (90x90), sem descrição /
 / ========================================= */
-.lastFourArticleLayout { /* Nome mantido para consistência, mas agora se aplica aos artigos específicos */
-  /* Herda border-top de .newsCardAside */
+.lastFourArticleLayout {
+  /* Herda .newsCardBase para border-top e padding */
 }
 
-.lastFourArticleLayout .cardBodyAside {
-  display: flex; /* Garante que display flex está aplicado */
-  flex-direction: row-reverse; /* Imagem à direita, texto à esquerda */
-  align-items: flex-start; /* Alinha o conteúdo ao topo */
-  gap: 15px; /* Espaço entre a imagem e o texto */
-  padding: 1rem 0; /* Mantém o padding padrão */
-}
+/* O .cardBodyRowReverse já define flex-direction: row-reverse para o corpo do card */
 
-.newsImgSmall { /* Classe específica para a imagem 90x90 */
+.newsImgSmall { /* Imagem pequena específica para este grupo */
   width: 90px;
   height: 90px;
   object-fit: cover;
   flex-shrink: 0; /* Impede que a imagem encolha */
-  margin-bottom: 0; /* Remove margem inferior, pois o layout agora é em linha */
 }
 
-.lastFourArticleLayout .newsDescription {
-  display: none; /* Oculta a descrição para os artigos alvo */
-}
 
 /* ========================================= /
-/ MEDIA QUERIES (adaptadas para não interferir nos artigos alvo) /
+/ GRUPO 4: ARTIGOS DE LISTA PADRÃO (índice 10 em diante) /
+/ Item de lista padrão: layout em coluna, imagem média, descrição completa /
 / ========================================= */
+.defaultArticleLayout {
+  /* Herda .newsCardBase para border-top e padding */
+}
+
+.defaultArticleLayout .cardBodyBase {
+  flex-direction: column; /* Garante layout em coluna */
+  gap: 15px; /* Espaçamento padrão */
+}
+
+.newsImgDefault { /* Imagem de tamanho médio para este grupo */
+  width: 100%;
+  height: 180px; /* Exemplo de altura fixa */
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+
+/* ========================================= /
+/ MEDIA QUERIES (Ajustes para diferentes tamanhos de tela) /
+/ ========================================= */
+
 @media screen and (max-width: 1070px) {
+  /* Ajustes específicos do carrossel */
   .carouselContainer {
     padding: 1rem;
   }
   .carouselInnerTrack {
     gap: 15px;
   }
-  .smallArticleLayoutPaged {
-    /* flex-basis e max-width são controlados por inline style */
-    flex-basis: calc(50% - 7.5px); /* Ajusta para 2 cards e gap de 15px */
-    max-width: calc(50% / 2 - 7.5px); /* Correção para calc(50% - gap/2) */
-  }
-  .carouselNavigationButtons {
-    margin-top: 15px;
-  }
+  /* .carouselCardLayout flex-basis é controlado por inline style */
 }
 
 @media screen and (max-width: 750px) {
+  /* Ajustes comuns para telas menores */
+  .newsCardBase {
+    padding: 0.8rem 0; /* Menos padding vertical */
+  }
+  .newsTitleBase {
+    font-size: 1.2rem; /* Ajusta o tamanho geral do título */
+    padding: 5px 0;
+  }
+  .newsDescriptionBase {
+    font-size: 0.9rem;
+  }
+  .newsTimePublishedBase {
+    font-size: 0.7rem;
+  }
+
+  /* GRUPO 1: Artigos principais (1 e 6) */
+  .mainArticleLayout .newsImgLarge {
+    height: 200px; /* Ajusta altura da imagem para mobile */
+  }
+  .mainArticleLayout .newsTitleBase {
+    font-size: 1.3rem; /* Título um pouco menor para mobile */
+  }
+
+  /* GRUPO 2: Artigos do carrossel */
   .carouselContainer {
-    padding: 1rem 0;
+    padding: 0.8rem 0; /* Ajusta padding do container */
   }
   .carouselInnerTrack {
     gap: 15px;
   }
-  /* Estilos do carrossel em mobile (row, imagem menor) */
-  .smallArticleLayoutPaged .cardBodyAside {
-    flex-direction: row; /* Carrossel: row no mobile */
+  .carouselCardLayout .cardBodyBase {
+    flex-direction: row; /* Carrossel: layout em linha no mobile */
     align-items: flex-start;
     text-align: left;
     gap: 15px;
-    padding: 0;
   }
-  .smallArticleLayoutPaged .newsImgAside {
-    width: 80px; /* Carrossel: 80x80 no mobile */
+  .newsImgCarousel {
+    width: 80px; /* Imagem do carrossel 80x80 no mobile */
     height: 80px;
-    margin-bottom: 0;
-    flex-shrink: 0;
   }
-  .smallArticleLayoutPaged .newsTitleAside {
+  .newsTitleCarousel {
     font-size: 1rem;
   }
-  .smallArticleLayoutPaged .newsAuthor,
-  .smallArticleLayoutPaged .newsTimePublished {
+  .newsAuthorCarousel,
+  .newsTimePublishedCarousel {
     font-size: 0.75rem;
   }
   .carouselNavigationButtons {
@@ -231,38 +305,62 @@
     font-size: 1rem;
   }
 
-  /* Estilos dos artigos 7, 8, 9, 10 em mobile - mantêm row-reverse e 90x90 */
-  .lastFourArticleLayout .cardBodyAside {
-    flex-direction: row-reverse; /* Mantém row-reverse */
+  /* GRUPO 3: Últimos quatro artigos */
+  .lastFourArticleLayout .cardBodyBase {
+    flex-direction: row-reverse; /* Mantém row-reverse no mobile */
     align-items: flex-start;
-    text-align: left; /* Garante alinhamento do texto */
-    gap: 15px; /* Mantém o gap */
-    padding: 1rem 0;
+    text-align: left;
+    gap: 15px;
   }
   .newsImgSmall {
-    width: 90px; /* Mantém 90x90 */
+    width: 90px; /* Mantém 90x90 no mobile */
     height: 90px;
+  }
+  .newsTitleLastFour {
+    font-size: 1rem; /* Ajusta tamanho do título para mobile */
+  }
+
+  /* GRUPO 4: Artigos de lista padrão */
+  .defaultArticleLayout .newsImgDefault {
+    height: 150px;
+  }
+  .defaultArticleLayout .newsTitleBase {
+    font-size: 1.2rem;
   }
 }
 
 @media screen and (max-width: 550px) {
+  /* Ajustes adicionais para telas mobile menores */
+  .newsCardBase {
+    padding: 0.6rem 0; /* Menos padding ainda */
+  }
+  .mainArticleLayout .newsImgLarge {
+    height: 180px;
+  }
+  .mainArticleLayout .newsTitleBase {
+    font-size: 1.2rem;
+  }
   .carouselInnerTrack {
     gap: 10px;
   }
-  .smallArticleLayoutPaged .newsImgAside {
-    width: 70px; /* Carrossel: 70x70 em mobile menor */
+  .newsImgCarousel {
+    width: 70px; /* Imagem do carrossel 70x70 em mobile menor */
     height: 70px;
   }
-  .smallArticleLayoutPaged .newsTitleAside {
+  .newsTitleCarousel {
     font-size: 0.9rem;
   }
-
-  /* Estilos dos artigos 7, 8, 9, 10 em mobile menor - mantêm row-reverse e 90x90 */
   .newsImgSmall {
-    width: 90px; /* Mantém 90x90 */
-    height: 90px;
+    width: 80px; /* Imagem 80x80 para últimos quatro em mobile menor */
+    height: 80px;
   }
-  .lastFourArticleLayout .newsTitleAside {
-    font-size: 0.9rem; /* Pode ajustar a fonte se necessário */
+  .newsTitleLastFour {
+    font-size: 0.9rem;
+  }
+  .defaultArticleLayout .newsImgDefault {
+    height: 120px;
+  }
+  .defaultArticleLayout .newsTitleBase {
+    font-size: 1.1rem;
   }
 }

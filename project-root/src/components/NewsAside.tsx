@@ -1,9 +1,11 @@
+// NewsAside.tsx
+
 "use client";
 
 import { useEffect, useState, useRef } from "react";
 import styles from "../styles/NewsAside.module.css";
 import { API_URL, API_KEY, COUNTRY, CATEGORY_ENTERTAINMENT } from "../utils/config";
-import { timeSince, displayError } from "../utils/utils";
+import { timeSince } from "../utils/utils"; // displayError foi removido, usando setError diretamente
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 
 interface Article {
@@ -14,25 +16,72 @@ interface Article {
   publishedAt: string;
 }
 
+// Componente auxiliar para renderizar um card de artigo com estilos flexíveis
+const ArticleCard = ({
+  article,
+  index,
+  layoutClasses = [], // Classes aplicadas ao <section> externo do card
+  cardBodyClasses = [], // Classes aplicadas à section do corpo do card (e.g., para row-reverse)
+  imageClass,
+  textClasses = [], // Classes para o container de texto
+  titleClass = styles.newsTitleBase,
+  descriptionClass = styles.newsDescriptionBase,
+  timePublishedClass = styles.newsTimePublishedBase,
+  authorClass = styles.newsAuthorBase,
+  showDescription = true,
+  style = {}, // Para estilos inline como flexBasis do carrossel
+}: {
+  article: Article;
+  index: number;
+  layoutClasses?: string[];
+  cardBodyClasses?: string[];
+  imageClass: string;
+  textClasses?: string[];
+  titleClass?: string;
+  descriptionClass?: string;
+  timePublishedClass?: string;
+  authorClass?: string;
+  showDescription?: boolean;
+  style?: React.CSSProperties; // Para estilos inline
+}) => {
+  // Ignora artigos inválidos ou removidos
+  if (!article || article.title === "[Removed]" || article.description === null) return null;
+  
+  const timeElapsed = timeSince(article.publishedAt);
+
+  return (
+    <section key={index} className={`${styles.newsCardBase} ${layoutClasses.join(' ')}`} style={style}>
+      <section className={`${styles.cardBodyBase} ${cardBodyClasses.join(' ')}`}>
+        <img src={article.image} alt={article.title} title={article.title} className={imageClass} />
+        <section className={`${styles.newsTextBase} ${textClasses.join(' ')}`}>
+          <p className={authorClass}>{article.author || ""}</p>
+          <h2 className={titleClass}>{article.title}</h2>
+          {showDescription && <p className={descriptionClass}>{article.description}</p>}
+          <p className={timePublishedClass}>{timeElapsed}</p>
+        </section>
+      </section>
+    </section>
+  );
+};
+
 export default function NewsAside() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  // Estado para a paginação do carrossel
-  const baseCardsPerPage = 2; // Queremos exibir 2 cards por vez no desktop
-  const [effectiveCardsPerPage, setEffectiveCardsPerPage] = useState(baseCardsPerPage); // Define quantos cards exibir com base no tamanho da tela
+  const baseCardsPerPage = 2; // Exibe 2 cards por vez no desktop
+  const [effectiveCardsPerPage, setEffectiveCardsPerPage] = useState(baseCardsPerPage);
   const [currentPage, setCurrentPage] = useState(0);
 
-  // Ref para o container visível do carrossel para calcular a largura de um "slide"
   const carouselViewportRef = useRef<HTMLDivElement>(null);
-  // Estado para o valor de transformX para o efeito de slide
   const [translateXOffset, setTranslateXOffset] = useState(0);
 
   useEffect(() => {
     // Evita consumo da API durante desenvolvimento sem chave
     if (!API_KEY) {
       console.warn("⚠️ API_KEY ausente. Renderizando dados mockados para evitar consumo da API.");
+      // Dados mockados garantindo que temos pelo menos 11 artigos para cobrir todos os grupos
       const mockArticles: Article[] = [
+        // Artigo 1 (índice 0) - Estilo Principal
         {
           title: "Título de Exemplo Principal (Mock 1)",
           description: "Esta é a descrição detalhada para o primeiro card de destaque. Ele ocupa a largura total e tem uma imagem maior.",
@@ -40,92 +89,86 @@ export default function NewsAside() {
           author: "Autor Destacado",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 1).toISOString(),
         },
-        // Cards para o carrossel (índices 1 a 4) - exatamente 4 artigos
+        // Artigos 2, 3, 4, 5 (índices 1 a 4) - Estilo Carrossel
         {
           title: "Carrossel Notícia 1",
-          description: "Esta é a descrição para o card do carrossel número 1. Fica com imagem 90x90.",
+          description: "Descrição para o card do carrossel número 1. Imagem 150x150, sem descrição visível.",
           image: "https://via.placeholder.com/150x150/33FF57/FFFFFF?text=Carousel+1",
           author: "Carrossel Autor 1",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 2).toISOString(),
         },
         {
           title: "Carrossel Notícia 2",
-          description: "Esta é a descrição para o card do carrossel número 2. Fica com imagem 90x90.",
+          description: "Descrição para o card do carrossel número 2. Imagem 150x150, sem descrição visível.",
           image: "https://via.placeholder.com/150x150/3357FF/FFFFFF?text=Carousel+2",
           author: "Carrossel Autor 2",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 3).toISOString(),
         },
         {
           title: "Carrossel Notícia 3",
-          description: "Esta é a descrição para o card do carrossel número 3. Fica com imagem 90x90.",
+          description: "Descrição para o card do carrossel número 3. Imagem 150x150, sem descrição visível.",
           image: "https://via.placeholder.com/150x150/FF33A1/FFFFFF?text=Carousel+3",
           author: "Carrossel Autor 3",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 4).toISOString(),
         },
         {
           title: "Carrossel Notícia 4",
-          description: "Esta é a descrição para o card do carrossel número 4. Fica com imagem 90x90.",
+          description: "Descrição para o card do carrossel número 4. Imagem 150x150, sem descrição visível.",
           image: "https://via.placeholder.com/150x150/A1FF33/FFFFFF?text=Carousel+4",
           author: "Carrossel Autor 4",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 5).toISOString(),
         },
-        // Artigos restantes (a partir do índice 5)
+        // Artigo 6 (índice 5) - Estilo Principal (igual ao Artigo 1)
         {
-          title: "Notícia Restante 1",
-          description: "Este é um artigo que vem depois do carrossel. Descrição longa para testar o corte.",
-          image: "https://via.placeholder.com/300x200/33FFF6/FFFFFF?text=Remaining+1",
-          author: "Autor Padrão",
+          title: "Notícia Importante (Mock 6)",
+          description: "Este artigo é o sexto na lista e deve ter o mesmo estilo do primeiro artigo, com imagem grande e descrição completa.",
+          image: "https://via.placeholder.com/600x400/FFC300/FFFFFF?text=Main+News+2",
+          author: "Autor Importante",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 6).toISOString(),
         },
-        {
-          title: "Notícia Restante 2",
-          description: "Mais um artigo para preencher a lista após o carrossel. Descrição para ver se aparece.",
-          image: "https://via.placeholder.com/300x200/FFC300/FFFFFF?text=Remaining+2",
-          author: "Outro Autor",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 7).toISOString(),
-        },
-        {
-          title: "Notícia Restante 3",
-          description: "Mais um para ter certeza de que o slice está funcionando. Descrição de teste.",
-          image: "https://via.placeholder.com/300x200/FF6347/FFFFFF?text=Remaining+3",
-          author: "Terceiro Autor",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 8).toISOString(),
-        },
-        // A PARTIR DAQUI SÃO OS ÚLTIMOS 4
+        // Artigos 7, 8, 9, 10 (índices 6 a 9) - Estilo "Últimos Quatro" (imagem pequena, row-reverse, sem descrição)
         {
           title: "Última Notícia 1 (especial)",
-          description: "Este é o primeiro dos últimos 4 artigos. Deve ter estilo diferenciado.",
+          description: "Primeiro dos últimos 4 artigos. Estilo diferenciado.",
           image: "https://via.placeholder.com/100x100/C70039/FFFFFF?text=Last+1",
           author: "Autor Especial 1",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 9).toISOString(),
+          publishedAt: new Date(Date.now() - 3600 * 1000 * 7).toISOString(),
         },
         {
           title: "Última Notícia 2 (especial)",
           description: "Segundo dos últimos 4 artigos. Imagem 90x90, sem descrição, row-reverse.",
           image: "https://via.placeholder.com/100x100/900C3F/FFFFFF?text=Last+2",
           author: "Autor Especial 2",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 10).toISOString(),
+          publishedAt: new Date(Date.now() - 3600 * 1000 * 8).toISOString(),
         },
         {
           title: "Última Notícia 3 (especial)",
           description: "Terceiro dos últimos 4 artigos. Imagem 90x90, sem descrição, row-reverse.",
           image: "https://via.placeholder.com/100x100/581845/FFFFFF?text=Last+3",
           author: "Autor Especial 3",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 11).toISOString(),
+          publishedAt: new Date(Date.now() - 3600 * 1000 * 9).toISOString(),
         },
         {
           title: "Última Notícia 4 (especial)",
-          description: "Quarto e último artigo. Imagem 90x90, sem descrição, row-reverse.",
+          description: "Quarto e último artigo deste grupo. Imagem 90x90, sem descrição, row-reverse.",
           image: "https://via.placeholder.com/100x100/281845/FFFFFF?text=Last+4",
           author: "Autor Especial 4",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 12).toISOString(),
+          publishedAt: new Date(Date.now() - 3600 * 1000 * 10).toISOString(),
+        },
+        // Artigos restantes (índice 10 em diante) - Estilo Padrão/Lista
+        {
+          title: "Artigo Extra (Padrão 1)",
+          description: "Este é um artigo adicional, deve seguir o estilo de lista padrão (imagem média, descrição).",
+          image: "https://via.placeholder.com/300x200/123456/FFFFFF?text=Extra+Default+1",
+          author: "Autor Padrão",
+          publishedAt: new Date(Date.now() - 3600 * 1000 * 11).toISOString(),
         },
         {
-          title: "Artigo Extra (para testar menos de 4 no final)",
-          description: "Este artigo é para testar quando há menos de 4 no final.",
-          image: "https://via.placeholder.com/100x100/123456/FFFFFF?text=Extra",
-          author: "Autor Extra",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 13).toISOString(),
+          title: "Artigo Extra (Padrão 2)",
+          description: "Para garantir que o tratamento de artigos adicionais está correto.",
+          image: "https://via.placeholder.com/300x200/654321/FFFFFF?text=Extra+Default+2",
+          author: "Outro Autor",
+          publishedAt: new Date(Date.now() - 3600 * 1000 * 12).toISOString(),
         },
       ];
       setArticles(mockArticles);
@@ -145,23 +188,23 @@ export default function NewsAside() {
         console.log("✅ Dados recebidos:", data);
 
         if (data.articles && Array.isArray(data.articles)) {
-          // Garante que temos artigos suficientes. Pegamos um pouco mais para filtragem.
+          // Garante que temos artigos suficientes (pelo menos 11 para cobrir até o índice 10 e o grupo 4)
           setArticles(data.articles.slice(0, 15));
         } else {
           throw new Error("Resposta inesperada da API");
         }
       } catch (err) {
         console.error("❌ Erro ao buscar notícias:", err);
-        const msg = displayError("Erro ao buscar notícias.");
-        setError(msg);
+        setError("Erro ao buscar notícias."); // Mensagem de erro simplificada
       }
     };
 
     fetchNews();
   }, []);
 
-  // FILTRA OS ARTIGOS PARA O CARROSSEL (índices 1 a 4)
-  const carouselArticles = articles.slice(1, 5);
+  // Artigos do carrossel (índices 1 a 4 do array original de artigos)
+  const carouselArticles = articles.slice(1, 5); 
+  const totalCarouselPages = Math.ceil(carouselArticles.length / effectiveCardsPerPage);
 
   // Lógica para determinar cards por página e calcular o offset de slide
   useEffect(() => {
@@ -173,24 +216,21 @@ export default function NewsAside() {
         setEffectiveCardsPerPage(baseCardsPerPage); // Retorna ao padrão (2)
       }
 
-      // Recalcula o offset de slide
-      // Adiciona um pequeno atraso para garantir que o DOM renderize as mudanças de tamanho antes de calcular
       const timeoutId = setTimeout(() => {
         if (carouselViewportRef.current) {
           const viewportWidth = carouselViewportRef.current.offsetWidth;
+          // Recalcula o offset de slide para manter a página atual visível
           setTranslateXOffset(-currentPage * viewportWidth);
         }
-      }, 50); // Atraso de 50ms
+      }, 50);
 
-      return () => clearTimeout(timeoutId); // Limpa o timeout se o componente for desmontado ou as dependências mudarem
+      return () => clearTimeout(timeoutId);
     };
 
     handleResize(); // Executa na montagem inicial e para definir o offset
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [currentPage, effectiveCardsPerPage]);
-
-  const totalCarouselPages = Math.ceil(carouselArticles.length / effectiveCardsPerPage);
+  }, [currentPage, effectiveCardsPerPage, carouselArticles.length]); // Adiciona carouselArticles.length para robustez
 
   // Funções para navegar no carrossel
   const handlePrevPage = () => {
@@ -201,75 +241,53 @@ export default function NewsAside() {
     setCurrentPage((prev) => Math.min(totalCarouselPages - 1, prev + 1));
   };
 
-  // --- NOVA LÓGICA PARA IDENTIFICAR OS ÚLTIMOS 4 ARTIGOS ---
-  // A partir do índice 5, quantos artigos teremos?
-  const remainingArticles = articles.slice(5);
-  // Onde começam os "últimos 4"?
-  // Se houver 4 ou mais artigos restantes, pegamos os últimos 4.
-  // Se houver menos de 4, pegamos todos eles para aplicar o estilo.
-  const startIndexForLastFour = Math.max(0, remainingArticles.length - 4);
-  // --- FIM DA NOVA LÓGICA ---
-
   return (
     <section>
-      {error && <p>{error}</p>}
+      {error && <p className={styles.errorMessage}>{error}</p>}
 
       {articles.length === 0 && !error && (
-        <p>Carregando notícias...</p>
+        <p className={styles.loadingMessage}>Carregando notícias...</p>
       )}
 
-      {/* RENDERIZAÇÃO DO PRIMEIRO ARTIGO (Índice 0) */}
-      {articles.length > 0 && articles[0].title !== "[Removed]" && articles[0].description !== null && (
-        <section key={0} className={styles.newsCardAside}>
-          <section className={styles.cardBodyAside}>
-            <img src={articles[0].image} alt={articles[0].title} title={articles[0].title} className={styles.newsImgAside} />
-            <section className={styles.newsTextAside}>
-              <p className={styles.newsAuthor}>{articles[0].author || ""}</p>
-              <h2 className={styles.newsTitleAside}>{articles[0].title}</h2>
-              <p className={styles.newsDescription}>{articles[0].description}</p>
-              <p className={styles.newsTimePublished}>{timeSince(articles[0].publishedAt)}</p>
-            </section>
-          </section>
-        </section>
+      {/* GRUPO 1: ARTIGO 1 (Índice 0) */}
+      {articles.length > 0 && articles[0] && (
+        <ArticleCard
+          article={articles[0]}
+          index={0}
+          layoutClasses={[styles.mainArticleLayout]}
+          imageClass={styles.newsImgLarge}
+          showDescription={true}
+        />
       )}
 
-      {/* RENDERIZAÇÃO DO CARROSSEL (índices 1 a 4) */}
+      {/* GRUPO 2: CARROSSEL (Artigos 2, 3, 4, 5 - Índices 1 a 4) */}
       {carouselArticles.length > 0 && (
-        <div className={styles.carouselContainer}>
+        // O container do carrossel também herda o estilo base para ter a borda superior e padding
+        <div className={`${styles.carouselContainer} ${styles.newsCardBase}`}>
           <div ref={carouselViewportRef} className={styles.carouselViewport}>
             <div
               className={styles.carouselInnerTrack}
               style={{ transform: `translateX(${translateXOffset}px)` }}
             >
               {carouselArticles.map((article, indexInCarousel) => {
-                // Determine a largura base de cada card no carrossel
+                const originalIndex = 1 + indexInCarousel; // Mapeia para o índice original no array 'articles'
                 const cardWidthStyle = effectiveCardsPerPage === 1 ?
                   { flexBasis: '100%', maxWidth: '100%' } :
-                  { flexBasis: `calc(100% / ${effectiveCardsPerPage} - 10px)`, maxWidth: `calc(100% / ${effectiveCardsPerPage} - 10px)` }; // Ajuste de 10px para metade do gap
-
-                if (article.title === "[Removed]" || article.description === null) return null;
-                const timeElapsed = timeSince(article.publishedAt);
+                  { flexBasis: `calc(100% / ${effectiveCardsPerPage} - 10px)`, maxWidth: `calc(100% / ${effectiveCardsPerPage} - 10px)` };
 
                 return (
-                  <section
-                    key={`carousel-${indexInCarousel}`} // Key única para cada item do carrossel
-                    className={`${styles.newsCardAside} ${styles.smallArticleLayoutPaged}`}
-                    style={cardWidthStyle} // Aplica largura dinâmica
-                  >
-                    <section className={`${styles.cardBodyAside} ${styles.smallArticleBodyPaged}`}>
-                      <img
-                        src={article.image}
-                        alt={article.title}
-                        title={article.title}
-                        className={styles.newsImgAside} // Carrossel usa a imagem padrão/maior de aside
-                      />
-                      <section className={styles.newsTextAside}>
-                        <p className={styles.newsAuthor}>{article.author || ""}</p>
-                        <h2 className={styles.newsTitleAside}>{article.title}</h2>
-                        <p className={styles.newsTimePublished}>{timeElapsed}</p>
-                      </section>
-                    </section>
-                  </section>
+                  <ArticleCard
+                    key={originalIndex}
+                    article={article}
+                    index={originalIndex}
+                    layoutClasses={[styles.carouselCardLayout]}
+                    imageClass={styles.newsImgCarousel}
+                    titleClass={styles.newsTitleCarousel}
+                    authorClass={styles.newsAuthorCarousel}
+                    timePublishedClass={styles.newsTimePublishedCarousel}
+                    showDescription={false} // Carrossel não mostra descrição
+                    style={cardWidthStyle} // Aplica estilo inline para largura dinâmica
+                  />
                 );
               })}
             </div>
@@ -285,42 +303,50 @@ export default function NewsAside() {
         </div>
       )}
 
-      {/* RENDERIZAÇÃO DOS ARTIGOS RESTANTES (A partir do índice 5) */}
-      {remainingArticles.length > 0 && (
-        <>
-          {remainingArticles.map((article, indexInRemaining) => {
-            const originalIndex = indexInRemaining + 5; // Ajusta o índice para a lista original
-            if (article.title === "[Removed]" || article.description === null) return null;
-            const timeElapsed = timeSince(article.publishedAt);
-
-            // Determina se é um dos últimos 4 artigos (a partir do total de remainingArticles)
-            const isLastFour = indexInRemaining >= startIndexForLastFour;
-
-            return (
-              <section
-                key={originalIndex}
-                className={`${styles.newsCardAside} ${isLastFour ? styles.lastFourArticleLayout : ''}`}
-              >
-                <section className={styles.cardBodyAside}>
-                  <img
-                    src={article.image}
-                    alt={article.title}
-                    title={article.title}
-                    className={isLastFour ? styles.newsImgSmall : styles.newsImgAside}
-                  />
-                  <section className={styles.newsTextAside}>
-                    <p className={styles.newsAuthor}>{article.author || ""}</p>
-                    <h2 className={styles.newsTitleAside}>{article.title}</h2>
-                    {/* A descrição só é exibida se NÃO for um dos últimos 4 */}
-                    {!isLastFour && <p className={styles.newsDescription}>{article.description}</p>}
-                    <p className={styles.newsTimePublished}>{timeElapsed}</p>
-                  </section>
-                </section>
-              </section>
-            );
-          })}
-        </>
+      {/* GRUPO 1: ARTIGO 6 (Índice 5) - O mesmo estilo do Artigo 1 */}
+      {articles.length > 5 && articles[5] && (
+        <ArticleCard
+          article={articles[5]}
+          index={5}
+          layoutClasses={[styles.mainArticleLayout]}
+          imageClass={styles.newsImgLarge}
+          showDescription={true}
+        />
       )}
+
+      {/* GRUPO 3: ARTIGOS 7, 8, 9, 10 (Índices 6 a 9) */}
+      {articles.length > 9 && Array.from({ length: 4 }).map((_, i) => {
+        const articleIndex = 6 + i; // Começa no índice 6
+        const article = articles[articleIndex];
+        if (!article) return null; // Prevenção caso o array seja menor que o esperado
+        return (
+          <ArticleCard
+            key={articleIndex}
+            article={article}
+            index={articleIndex}
+            layoutClasses={[styles.lastFourArticleLayout]}
+            cardBodyClasses={[styles.cardBodyRowReverse]} // Aplica o flex-direction: row-reverse
+            imageClass={styles.newsImgSmall}
+            titleClass={styles.newsTitleLastFour}
+            showDescription={false} // Não mostra descrição para estes artigos
+          />
+        );
+      })}
+
+      {/* GRUPO 4: ARTIGOS RESTANTES (Índice 10 em diante) - Estilo de Lista Padrão */}
+      {articles.length > 10 && articles.slice(10).map((article, indexInSlice) => {
+        const originalIndex = 10 + indexInSlice;
+        return (
+          <ArticleCard
+            key={originalIndex}
+            article={article}
+            index={originalIndex}
+            layoutClasses={[styles.defaultArticleLayout]}
+            imageClass={styles.newsImgDefault}
+            showDescription={true} // Artigos padrão mostram descrição
+          />
+        );
+      })}
     </section>
   );
 }
