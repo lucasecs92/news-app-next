@@ -192,7 +192,6 @@
 .carouselCardLayout .cardBodyBase {
   flex-direction: column; /* Layout padrão para desktop: imagem e texto em coluna */
   align-items: center; /* Centraliza imagem/texto no desktop */
-  text-align: center; /* Centraliza o texto no desktop */
   padding: 0; /* Remove padding padrão */
   gap: 5px; /* Pequeno espaçamento entre os elementos */
 }
@@ -247,6 +246,13 @@
 /* ========================================= /
 / MEDIA QUERIES (Ajustes para diferentes tamanhos de tela) /
 / ========================================= */
+
+@media screen and (max-width: 1200px) {
+  .newsImgCarousel { /* Imagem específica para o carrossel */
+    width: 130px;
+    height: 130px;
+  }
+}
 
 @media screen and (max-width: 1070px) {
   /* Ajustes específicos do carrossel */
