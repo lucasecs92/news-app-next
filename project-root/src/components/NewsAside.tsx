@@ -1,4 +1,3 @@
-// NewsAside.tsx
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -73,46 +72,60 @@ export default function NewsAside() {
         // Artigos restantes (a partir do índice 5)
         {
           title: "Notícia Restante 1",
-          description: "Este é um artigo que vem depois do carrossel.",
+          description: "Este é um artigo que vem depois do carrossel. Descrição longa para testar o corte.",
           image: "https://via.placeholder.com/300x200/33FFF6/FFFFFF?text=Remaining+1",
           author: "Autor Padrão",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 6).toISOString(),
         },
         {
           title: "Notícia Restante 2",
-          description: "Mais um artigo para preencher a lista após o carrossel.",
+          description: "Mais um artigo para preencher a lista após o carrossel. Descrição para ver se aparece.",
           image: "https://via.placeholder.com/300x200/FFC300/FFFFFF?text=Remaining+2",
           author: "Outro Autor",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 7).toISOString(),
         },
         {
           title: "Notícia Restante 3",
-          description: "Mais um para ter certeza de que o slice está funcionando.",
+          description: "Mais um para ter certeza de que o slice está funcionando. Descrição de teste.",
           image: "https://via.placeholder.com/300x200/FF6347/FFFFFF?text=Remaining+3",
           author: "Terceiro Autor",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 8).toISOString(),
         },
-        // Adicionando artigos mockados para ter um total de 10+
+        // A PARTIR DAQUI SÃO OS ÚLTIMOS 4
         {
-          title: "Notícia Restante 4 (Extra)",
-          description: "Quarto artigo para preencher a lista após o carrossel.",
-          image: "https://via.placeholder.com/300x200/C70039/FFFFFF?text=Remaining+4",
-          author: "Quarto Autor",
+          title: "Última Notícia 1 (especial)",
+          description: "Este é o primeiro dos últimos 4 artigos. Deve ter estilo diferenciado.",
+          image: "https://via.placeholder.com/100x100/C70039/FFFFFF?text=Last+1",
+          author: "Autor Especial 1",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 9).toISOString(),
         },
         {
-          title: "Notícia Restante 5 (Extra)",
-          description: "Quinto artigo para preencher a lista após o carrossel e atingir o mínimo de 10.",
-          image: "https://via.placeholder.com/300x200/900C3F/FFFFFF?text=Remaining+5",
-          author: "Quinto Autor",
+          title: "Última Notícia 2 (especial)",
+          description: "Segundo dos últimos 4 artigos. Imagem 90x90, sem descrição, row-reverse.",
+          image: "https://via.placeholder.com/100x100/900C3F/FFFFFF?text=Last+2",
+          author: "Autor Especial 2",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 10).toISOString(),
         },
         {
-          title: "Notícia Restante 6 (Extra)",
-          description: "Sexto artigo para garantir que há o suficiente, mesmo se um for removido.",
-          image: "https://via.placeholder.com/300x200/581845/FFFFFF?text=Remaining+6",
-          author: "Sexto Autor",
+          title: "Última Notícia 3 (especial)",
+          description: "Terceiro dos últimos 4 artigos. Imagem 90x90, sem descrição, row-reverse.",
+          image: "https://via.placeholder.com/100x100/581845/FFFFFF?text=Last+3",
+          author: "Autor Especial 3",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 11).toISOString(),
+        },
+        {
+          title: "Última Notícia 4 (especial)",
+          description: "Quarto e último artigo. Imagem 90x90, sem descrição, row-reverse.",
+          image: "https://via.placeholder.com/100x100/281845/FFFFFF?text=Last+4",
+          author: "Autor Especial 4",
+          publishedAt: new Date(Date.now() - 3600 * 1000 * 12).toISOString(),
+        },
+        {
+          title: "Artigo Extra (para testar menos de 4 no final)",
+          description: "Este artigo é para testar quando há menos de 4 no final.",
+          image: "https://via.placeholder.com/100x100/123456/FFFFFF?text=Extra",
+          author: "Autor Extra",
+          publishedAt: new Date(Date.now() - 3600 * 1000 * 13).toISOString(),
         },
       ];
       setArticles(mockArticles);
@@ -132,9 +145,7 @@ export default function NewsAside() {
         console.log("✅ Dados recebidos:", data);
 
         if (data.articles && Array.isArray(data.articles)) {
-          // Garante que temos pelo menos 10 artigos para exibir.
-          // Pegamos um pouco mais (ex: 15) para ter uma margem de segurança,
-          // caso alguns artigos tenham título "[Removed]" ou descrição nula.
+          // Garante que temos artigos suficientes. Pegamos um pouco mais para filtragem.
           setArticles(data.articles.slice(0, 15));
         } else {
           throw new Error("Resposta inesperada da API");
@@ -147,11 +158,9 @@ export default function NewsAside() {
     };
 
     fetchNews();
-
   }, []);
 
   // FILTRA OS ARTIGOS PARA O CARROSSEL (índices 1 a 4)
-  // O slice(1, 5) pega os índices 1, 2, 3 e 4.
   const carouselArticles = articles.slice(1, 5);
 
   // Lógica para determinar cards por página e calcular o offset de slide
@@ -177,9 +186,8 @@ export default function NewsAside() {
     };
 
     handleResize(); // Executa na montagem inicial e para definir o offset
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [currentPage, effectiveCardsPerPage]);
 
   const totalCarouselPages = Math.ceil(carouselArticles.length / effectiveCardsPerPage);
@@ -192,6 +200,15 @@ export default function NewsAside() {
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(totalCarouselPages - 1, prev + 1));
   };
+
+  // --- NOVA LÓGICA PARA IDENTIFICAR OS ÚLTIMOS 4 ARTIGOS ---
+  // A partir do índice 5, quantos artigos teremos?
+  const remainingArticles = articles.slice(5);
+  // Onde começam os "últimos 4"?
+  // Se houver 4 ou mais artigos restantes, pegamos os últimos 4.
+  // Se houver menos de 4, pegamos todos eles para aplicar o estilo.
+  const startIndexForLastFour = Math.max(0, remainingArticles.length - 4);
+  // --- FIM DA NOVA LÓGICA ---
 
   return (
     <section>
@@ -244,7 +261,7 @@ export default function NewsAside() {
                         src={article.image}
                         alt={article.title}
                         title={article.title}
-                        className={styles.newsImgAside}
+                        className={styles.newsImgAside} // Carrossel usa a imagem padrão/maior de aside
                       />
                       <section className={styles.newsTextAside}>
                         <p className={styles.newsAuthor}>{article.author || ""}</p>
@@ -269,33 +286,41 @@ export default function NewsAside() {
       )}
 
       {/* RENDERIZAÇÃO DOS ARTIGOS RESTANTES (A partir do índice 5) */}
-      {articles.slice(5).map((article, index) => {
-        const originalIndex = index + 5; // Ajusta o índice para a lista original
-        if (article.title === "[Removed]" || article.description === null) return null;
-        const timeElapsed = timeSince(article.publishedAt);
+      {remainingArticles.length > 0 && (
+        <>
+          {remainingArticles.map((article, indexInRemaining) => {
+            const originalIndex = indexInRemaining + 5; // Ajusta o índice para a lista original
+            if (article.title === "[Removed]" || article.description === null) return null;
+            const timeElapsed = timeSince(article.publishedAt);
 
-        return (
-          <section
-            key={originalIndex}
-            className={styles.newsCardAside}
-          >
-            <section className={styles.cardBodyAside}>
-              <img
-                src={article.image}
-                alt={article.title}
-                title={article.title}
-                className={styles.newsImgAside}
-              />
-              <section className={styles.newsTextAside}>
-                <p className={styles.newsAuthor}>{article.author || ""}</p>
-                <h2 className={styles.newsTitleAside}>{article.title}</h2>
-                <p className={styles.newsDescription}>{article.description}</p>
-                <p className={styles.newsTimePublished}>{timeElapsed}</p>
+            // Determina se é um dos últimos 4 artigos (a partir do total de remainingArticles)
+            const isLastFour = indexInRemaining >= startIndexForLastFour;
+
+            return (
+              <section
+                key={originalIndex}
+                className={`${styles.newsCardAside} ${isLastFour ? styles.lastFourArticleLayout : ''}`}
+              >
+                <section className={styles.cardBodyAside}>
+                  <img
+                    src={article.image}
+                    alt={article.title}
+                    title={article.title}
+                    className={isLastFour ? styles.newsImgSmall : styles.newsImgAside}
+                  />
+                  <section className={styles.newsTextAside}>
+                    <p className={styles.newsAuthor}>{article.author || ""}</p>
+                    <h2 className={styles.newsTitleAside}>{article.title}</h2>
+                    {/* A descrição só é exibida se NÃO for um dos últimos 4 */}
+                    {!isLastFour && <p className={styles.newsDescription}>{article.description}</p>}
+                    <p className={styles.newsTimePublished}>{timeElapsed}</p>
+                  </section>
+                </section>
               </section>
-            </section>
-          </section>
-        );
-      })}
+            );
+          })}
+        </>
+      )}
     </section>
   );
 }

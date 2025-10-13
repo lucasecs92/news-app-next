@@ -1,217 +1,267 @@
 /* NewsAside.module.css */
 .newsCardAside {
-    border-top: 1px solid #66666633;
+  border-top: 1px solid #66666633;
 }
 
 .cardBodyAside {
-    display: flex;
-    flex-direction: column;
-    padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
 }
 
 .newsImgAside {
-    width: 100%;
-    height: auto; 
-    object-fit: cover;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
 }
 
 /* .newsTextAside {
-    
+
 } */
 
 .newsAuthor {
-    font-weight: bold;
-    color: #66666693;
+  font-weight: bold;
+  color: #66666693;
 }
 
 .newsTitleAside {
-    font-size: 1.5rem;
-    font-weight: 400;
-    color: #333;
-    padding: 10px 0;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #333;
+  padding: 10px 0;
 }
 
 .newsTitleAside:hover {
-    color: #343434ce;
-    cursor: pointer;
+  color: #343434ce;
+  cursor: pointer;
 }
 
 .newsTextAside .newsDescription {
-    font-size: 1rem;
-    color: #666;
+  font-size: 1rem;
+  color: #666;
 }
 
 .newsTimePublished {
-    font-size: 0.8rem;
-    color: #666;
-    padding-top: 10px;
+  font-size: 0.8rem;
+  color: #666;
+  padding-top: 10px;
 }
 
-/* ========================================= */
-/* NOVOS ESTILOS PARA CARDS PAGINADOS (CARROSSEL) */
-/* ========================================= */
+/* ========================================= /
+/ ESTILOS PARA CARROSSEL (índices 1 a 4) /
+/ ========================================= */
 
 .carouselContainer {
-    display: flex;
-    flex-direction: column;
-    padding: 1rem 0;
-    border-top: 1px solid #66666633;
-    margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
+  border-top: 1px solid #66666633;
+  margin-top: 1rem;
 }
 
 .carouselViewport {
-    width: 100%;
-    overflow: hidden; /* Isso esconde os cards que estão fora da visualização */
+  width: 100%;
+  overflow: hidden; /* Isso esconde os cards que estão fora da visualização */
 }
 
 .carouselInnerTrack {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-    gap: 20px;
-    padding-bottom: 15px; 
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  gap: 20px;
+  padding-bottom: 15px;
 }
 
 .carouselNavigationButtons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 10px;
 }
 
 .carouselNavigationButtons button {
-    background: #f0f0f0;
-    border: 1px solid #ddd;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    font-size: 1.5rem;
-    border-radius: 50%;
-    transition: background-color 0.2s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .carouselNavigationButtons button:hover:not(:disabled) {
-    background: #e0e0e0;
+  background: #e0e0e0;
 }
 
 .carouselNavigationButtons button:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* Estilos para os cards individuais do carrossel */
 .smallArticleLayoutPaged {
-    /* flex-shrink: 0 é crucial para que os cards não encolham e o slide funcione */
-    flex-shrink: 0;
-    border: none;
-    padding: 0;
-    border-top: none;
-    flex-basis: calc(50% - 10px);
-    max-width: calc(50% - 10px);
+  flex-shrink: 0; /* É crucial para que os cards não encolham e o slide funcione */
+  border: none;
+  padding: 0;
+  border-top: none;
+  /* flex-basis e max-width são controlados via inline style no componente NewsAside.tsx para dinamismo */
 }
 
-
 .smallArticleLayoutPaged .cardBodyAside {
-    flex-direction: column;
-    padding: 0;
-    align-items: center;
+  flex-direction: column; /* Revertido: layout padrão em coluna para desktop */
+  padding: 0;
+  align-items: center;
+  gap: initial; /* Revertido: remove o gap global */
 }
 
 .smallArticleLayoutPaged .newsImgAside {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    margin-bottom: 10px;
-    flex-shrink: 0;
+  width: 150px; /* Revertido: tamanho da imagem do carrossel no desktop */
+  height: 150px;
+  object-fit: cover;
+  margin-bottom: 10px; /* Revertido: margem inferior para layout em coluna */
+  flex-shrink: 0;
 }
 
 .smallArticleLayoutPaged .newsAuthor {
-    font-size: 0.85rem;
-    padding-bottom: 3px;
+  font-size: 0.85rem;
+  padding-bottom: 3px;
 }
 
 .smallArticleLayoutPaged .newsTitleAside {
-    font-size: 1.1rem;
-    padding: 0;
-    line-height: 1.3;
+  font-size: 1.1rem;
+  padding: 0;
+  line-height: 1.3;
 }
 
 .smallArticleLayoutPaged .newsDescription {
-    display: none; /* Descrição oculta para estes cards */
+  display: none; /* Descrição oculta para estes cards */
 }
 
 .smallArticleLayoutPaged .newsTimePublished {
-    font-size: 0.75rem;
-    padding-top: 5px;
-    color: #999;
+  font-size: 0.75rem;
+  padding-top: 5px;
+  color: #999;
 }
 
+/* ========================================= /
+/ NOVOS ESTILOS PARA OS ARTIGOS 7, 8, 9 e 10 (índices 6, 7, 8, 9) /
+/ ========================================= */
+.lastFourArticleLayout { /* Nome mantido para consistência, mas agora se aplica aos artigos específicos */
+  /* Herda border-top de .newsCardAside */
+}
 
-/* Media Queries existentes e adaptadas */
+.lastFourArticleLayout .cardBodyAside {
+  display: flex; /* Garante que display flex está aplicado */
+  flex-direction: row-reverse; /* Imagem à direita, texto à esquerda */
+  align-items: flex-start; /* Alinha o conteúdo ao topo */
+  gap: 15px; /* Espaço entre a imagem e o texto */
+  padding: 1rem 0; /* Mantém o padding padrão */
+}
+
+.newsImgSmall { /* Classe específica para a imagem 90x90 */
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  flex-shrink: 0; /* Impede que a imagem encolha */
+  margin-bottom: 0; /* Remove margem inferior, pois o layout agora é em linha */
+}
+
+.lastFourArticleLayout .newsDescription {
+  display: none; /* Oculta a descrição para os artigos alvo */
+}
+
+/* ========================================= /
+/ MEDIA QUERIES (adaptadas para não interferir nos artigos alvo) /
+/ ========================================= */
 @media screen and (max-width: 1070px) {
-    .carouselContainer {
-        padding: 1rem;
-    }
-    .carouselInnerTrack {
-        gap: 15px;
-    }
-    .smallArticleLayoutPaged {
-        flex-basis: calc(50% - 7.5px); /* Ajusta para 2 cards e gap de 15px */
-        max-width: calc(50% - 7.5px);
-    }
-    .carouselNavigationButtons {
-        margin-top: 15px;
-    }
+  .carouselContainer {
+    padding: 1rem;
+  }
+  .carouselInnerTrack {
+    gap: 15px;
+  }
+  .smallArticleLayoutPaged {
+    /* flex-basis e max-width são controlados por inline style */
+    flex-basis: calc(50% - 7.5px); /* Ajusta para 2 cards e gap de 15px */
+    max-width: calc(50% / 2 - 7.5px); /* Correção para calc(50% - gap/2) */
+  }
+  .carouselNavigationButtons {
+    margin-top: 15px;
+  }
 }
 
 @media screen and (max-width: 750px) {
-    .carouselContainer {
-        padding: 1rem 0;
-    }
-    .carouselInnerTrack {
-        gap: 15px; 
-    }
-    .smallArticleLayoutPaged .cardBodyAside {
-        flex-direction: row; 
-        align-items: flex-start;
-        text-align: left;
-        gap: 15px;
-        padding: 0;
-    }
-    .smallArticleLayoutPaged .newsImgAside {
-        width: 80px;
-        height: 80px;
-        margin-bottom: 0;
-        flex-shrink: 0;
-    }
-    .smallArticleLayoutPaged .newsTitleAside {
-        font-size: 1rem;
-    }
-    .smallArticleLayoutPaged .newsAuthor,
-    .smallArticleLayoutPaged .newsTimePublished {
-        font-size: 0.75rem;
-    }
-    .carouselNavigationButtons {
-        margin-top: 15px;
-        gap: 10px;
-    }
-    .carouselNavigationButtons button {
-        padding: 8px 12px;
-        font-size: 1rem;
-    }
+  .carouselContainer {
+    padding: 1rem 0;
+  }
+  .carouselInnerTrack {
+    gap: 15px;
+  }
+  /* Estilos do carrossel em mobile (row, imagem menor) */
+  .smallArticleLayoutPaged .cardBodyAside {
+    flex-direction: row; /* Carrossel: row no mobile */
+    align-items: flex-start;
+    text-align: left;
+    gap: 15px;
+    padding: 0;
+  }
+  .smallArticleLayoutPaged .newsImgAside {
+    width: 80px; /* Carrossel: 80x80 no mobile */
+    height: 80px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  .smallArticleLayoutPaged .newsTitleAside {
+    font-size: 1rem;
+  }
+  .smallArticleLayoutPaged .newsAuthor,
+  .smallArticleLayoutPaged .newsTimePublished {
+    font-size: 0.75rem;
+  }
+  .carouselNavigationButtons {
+    margin-top: 15px;
+    gap: 10px;
+  }
+  .carouselNavigationButtons button {
+    padding: 8px 12px;
+    font-size: 1rem;
+  }
+
+  /* Estilos dos artigos 7, 8, 9, 10 em mobile - mantêm row-reverse e 90x90 */
+  .lastFourArticleLayout .cardBodyAside {
+    flex-direction: row-reverse; /* Mantém row-reverse */
+    align-items: flex-start;
+    text-align: left; /* Garante alinhamento do texto */
+    gap: 15px; /* Mantém o gap */
+    padding: 1rem 0;
+  }
+  .newsImgSmall {
+    width: 90px; /* Mantém 90x90 */
+    height: 90px;
+  }
 }
 
 @media screen and (max-width: 550px) {
-    .carouselInnerTrack {
-        gap: 10px; 
-    }
-    .smallArticleLayoutPaged .newsImgAside {
-        width: 70px;
-        height: 70px;
-    }
-    .smallArticleLayoutPaged .newsTitleAside {
-        font-size: 0.9rem;
-    }
+  .carouselInnerTrack {
+    gap: 10px;
+  }
+  .smallArticleLayoutPaged .newsImgAside {
+    width: 70px; /* Carrossel: 70x70 em mobile menor */
+    height: 70px;
+  }
+  .smallArticleLayoutPaged .newsTitleAside {
+    font-size: 0.9rem;
+  }
+
+  /* Estilos dos artigos 7, 8, 9, 10 em mobile menor - mantêm row-reverse e 90x90 */
+  .newsImgSmall {
+    width: 90px; /* Mantém 90x90 */
+    height: 90px;
+  }
+  .lastFourArticleLayout .newsTitleAside {
+    font-size: 0.9rem; /* Pode ajustar a fonte se necessário */
+  }
 }
