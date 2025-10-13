@@ -7,7 +7,6 @@ import { API_URL, API_KEY, COUNTRY, CATEGORY_ENTERTAINMENT } from "../utils/conf
 import { timeSince, displayError } from "../utils/utils";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 
-
 interface Article {
   title: string;
   description: string | null;
@@ -93,6 +92,28 @@ export default function NewsAside() {
           author: "Terceiro Autor",
           publishedAt: new Date(Date.now() - 3600 * 1000 * 8).toISOString(),
         },
+        // Adicionando artigos mockados para ter um total de 10+
+        {
+          title: "Notícia Restante 4 (Extra)",
+          description: "Quarto artigo para preencher a lista após o carrossel.",
+          image: "https://via.placeholder.com/300x200/C70039/FFFFFF?text=Remaining+4",
+          author: "Quarto Autor",
+          publishedAt: new Date(Date.now() - 3600 * 1000 * 9).toISOString(),
+        },
+        {
+          title: "Notícia Restante 5 (Extra)",
+          description: "Quinto artigo para preencher a lista após o carrossel e atingir o mínimo de 10.",
+          image: "https://via.placeholder.com/300x200/900C3F/FFFFFF?text=Remaining+5",
+          author: "Quinto Autor",
+          publishedAt: new Date(Date.now() - 3600 * 1000 * 10).toISOString(),
+        },
+        {
+          title: "Notícia Restante 6 (Extra)",
+          description: "Sexto artigo para garantir que há o suficiente, mesmo se um for removido.",
+          image: "https://via.placeholder.com/300x200/581845/FFFFFF?text=Remaining+6",
+          author: "Sexto Autor",
+          publishedAt: new Date(Date.now() - 3600 * 1000 * 11).toISOString(),
+        },
       ];
       setArticles(mockArticles);
       return;
@@ -111,8 +132,10 @@ export default function NewsAside() {
         console.log("✅ Dados recebidos:", data);
 
         if (data.articles && Array.isArray(data.articles)) {
-          // Garante que temos pelo menos 5 artigos para o carrossel + o primeiro
-          setArticles(data.articles.slice(0, 9)); // Pega mais artigos para garantir que temos suficientes
+          // Garante que temos pelo menos 10 artigos para exibir.
+          // Pegamos um pouco mais (ex: 15) para ter uma margem de segurança,
+          // caso alguns artigos tenham título "[Removed]" ou descrição nula.
+          setArticles(data.articles.slice(0, 15));
         } else {
           throw new Error("Resposta inesperada da API");
         }
@@ -124,6 +147,7 @@ export default function NewsAside() {
     };
 
     fetchNews();
+
   }, []);
 
   // FILTRA OS ARTIGOS PARA O CARROSSEL (índices 1 a 4)
@@ -155,6 +179,7 @@ export default function NewsAside() {
     handleResize(); // Executa na montagem inicial e para definir o offset
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+
   }, [currentPage, effectiveCardsPerPage]);
 
   const totalCarouselPages = Math.ceil(carouselArticles.length / effectiveCardsPerPage);
