@@ -176,6 +176,17 @@
   padding: 0; /* Remove padding padrão herdado de .newsCardBase */
   flex-shrink: 0; /* Impede que os cards encolham */
   /* flex-basis e max-width são controlados por inline style no componente NewsAside.tsx */
+  position: relative;
+}
+
+.carouselCardLayout:not(:last-child)::after {
+  content: ''; /* Essencial para pseudo-elementos */
+  position: absolute;
+  top: 0; /* Alinha no topo do card */
+  right: -10px; /* METADE do valor do GAP (20px / 2 = 10px). Posiciona a borda no meio do espaçamento */
+  width: 1px; /* Espessura da borda */
+  height: 100%; /* Faz a borda ter a altura total do card */
+  background-color: #66666633; /* Cor da borda */
 }
 
 .carouselCardLayout .cardBodyBase {
@@ -278,6 +289,9 @@
   }
   .carouselInnerTrack {
     gap: 15px;
+  }
+  .carouselCardLayout:not(:last-child)::after {
+    content: none; /* Oculta o pseudo-elemento */
   }
   .carouselCardLayout .cardBodyBase {
     flex-direction: row; /* Carrossel: layout em linha no mobile */
