@@ -131,7 +131,8 @@
 }
 
 .smallArticleLayoutPaged .newsTitleAside {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
+  font-weight: bold;
   padding: 0;
   line-height: 1.3;
 }
