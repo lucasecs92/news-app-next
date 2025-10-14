@@ -5,7 +5,7 @@
 import { useEffect, useState, useRef } from "react";
 import styles from "../styles/NewsAside.module.css";
 import { API_URL, API_KEY, COUNTRY, CATEGORY_ENTERTAINMENT } from "../utils/config";
-import { timeSince } from "../utils/utils"; // displayError foi removido, usando setError diretamente
+import { timeSince } from "../utils/utils";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 
 interface Article {
@@ -263,9 +263,9 @@ export default function NewsAside() {
       {/* GRUPO 2: CARROSSEL (Artigos 2, 3, 4, 5 - Índices 1 a 4) */}
       {carouselArticles.length > 0 && (
         // O container do carrossel também herda o estilo base para ter a borda superior e padding
-        <div className={`${styles.carouselContainer} ${styles.newsCardBase}`}>
-          <div ref={carouselViewportRef} className={styles.carouselViewport}>
-            <div
+        <section className={`${styles.carouselContainer} ${styles.newsCardBase}`}>
+          <section ref={carouselViewportRef} className={styles.carouselViewport}>
+            <section
               className={styles.carouselInnerTrack}
               style={{ transform: `translateX(${translateXOffset}px)` }}
             >
@@ -290,17 +290,17 @@ export default function NewsAside() {
                   />
                 );
               })}
-            </div>
-          </div>
-          <div className={styles.carouselNavigationButtons}>
+            </section>
+          </section>
+          <section className={styles.carouselNavigationButtons}>
             <button onClick={handlePrevPage} disabled={currentPage === 0} aria-label="Notícia Anterior">
               <MdNavigateBefore />
             </button>
             <button onClick={handleNextPage} disabled={currentPage >= totalCarouselPages - 1} aria-label="Próxima Notícia">
               <MdNavigateNext />
             </button>
-          </div>
-        </div>
+          </section>
+        </section>
       )}
 
       {/* GRUPO 1: ARTIGO 6 (Índice 5) - O mesmo estilo do Artigo 1 */}
@@ -315,23 +315,27 @@ export default function NewsAside() {
       )}
 
       {/* GRUPO 3: ARTIGOS 7, 8, 9, 10 (Índices 6 a 9) */}
-      {articles.length > 9 && Array.from({ length: 4 }).map((_, i) => {
-        const articleIndex = 6 + i; // Começa no índice 6
-        const article = articles[articleIndex];
-        if (!article) return null; // Prevenção caso o array seja menor que o esperado
-        return (
-          <ArticleCard
-            key={articleIndex}
-            article={article}
-            index={articleIndex}
-            layoutClasses={[styles.lastFourArticleLayout]}
-            cardBodyClasses={[styles.cardBodyRowReverse]} // Aplica o flex-direction: row-reverse
-            imageClass={styles.newsImgSmall}
-            titleClass={styles.newsTitleLastFour}
-            showDescription={false} // Não mostra descrição para estes artigos
-          />
-        );
-      })}
+      {articles.length > 9 && (
+        <section className={styles.lastFourArticlesGroup}> {/* NOVO CONTAINER AQUI */}
+          {Array.from({ length: 4 }).map((_, i) => {
+            const articleIndex = 6 + i; // Começa no índice 6
+            const article = articles[articleIndex];
+            if (!article) return null; // Prevenção caso o array seja menor que o esperado
+            return (
+              <ArticleCard
+                key={articleIndex}
+                article={article}
+                index={articleIndex}
+                layoutClasses={[styles.lastFourArticleLayout]}
+                cardBodyClasses={[styles.cardBodyRowReverse]} // Aplica o flex-direction: row-reverse
+                imageClass={styles.newsImgSmall}
+                titleClass={styles.newsTitleLastFour}
+                showDescription={false} // Não mostra descrição para estes artigos
+              />
+            );
+          })}
+        </section>
+      )}
 
       {/* GRUPO 4: ARTIGOS RESTANTES (Índice 10 em diante) - Estilo de Lista Padrão */}
       {articles.length > 10 && articles.slice(10).map((article, indexInSlice) => {

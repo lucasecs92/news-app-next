@@ -176,7 +176,7 @@
   padding: 0; /* Remove padding padrão herdado de .newsCardBase */
   flex-shrink: 0; /* Impede que os cards encolham */
   /* flex-basis e max-width são controlados por inline style no componente NewsAside.tsx */
-  position: relative;
+  position: relative; /* Necessário para o pseudo-elemento ::after */
 }
 
 .carouselCardLayout:not(:last-child)::after {
@@ -210,6 +210,13 @@
 / ========================================= */
 .lastFourArticleLayout {
   /* Herda .newsCardBase para border-top e padding */
+}
+
+/* Estilos para o container dos últimos 4 artigos */
+.lastFourArticlesGroup {
+  display: flex; /* Padrão: empilha verticalmente */
+  flex-direction: column;
+  gap: 15px; /* Espaçamento entre os cards quando em coluna */
 }
 
 /* O .cardBodyRowReverse já define flex-direction: row-reverse para o corpo do card */
@@ -264,12 +271,71 @@
     align-items: flex-start;
     gap: 1rem;
   }
-  /* .carouselInnerTrack {
-    gap: 15px;
-  } */
   .newsImgCarousel { 
     width: 185px;
     height: 185px;
+  }
+
+  /*
+    NOVO: Reordenação, layout de grid e DIVISORES VERTICAIS
+    para artigos 7-10 a partir de 1070px
+  */
+  .lastFourArticlesGroup {
+    display: grid; /* Passa para layout de grid */
+    grid-template-columns: 1fr 1fr; /* Duas colunas de largura igual */
+    gap: 20px; /* Espaçamento entre os itens do grid (horizontal e vertical) */
+    padding: 1rem 0; /* Ajusta o padding para o grupo */
+    border-top: 1px solid #66666633;
+    border-bottom: 1px solid #66666633; 
+  }
+
+  /* Garante que os itens do grid tenham position:relative para posicionar o ::after */
+  .lastFourArticlesGroup > .lastFourArticleLayout {
+    position: relative; 
+    border-top: none; /* Remove a borda superior individual para um visual de grid mais limpo */
+    padding-top: 0; /* Remove padding superior para a borda do grid */
+  }
+
+  /* Cria a barra vertical no espaço entre a primeira e a segunda coluna */
+  /* Target: Primeiro item (Artigo 7) e terceiro item (Artigo 9) do grid */
+  .lastFourArticlesGroup > .lastFourArticleLayout:nth-child(2n - 1)::after {
+    content: ''; /* Essencial para pseudo-elementos */
+    position: absolute;
+    right: -10px; /* Metade do valor do GAP (20px / 2 = 10px). Posiciona a barra no meio do espaçamento */
+    top: 0; /* Começa no topo do item do grid */
+    height: 100%; /* Faz a barra ter a altura total do item do grid */
+    width: 1px; /* Espessura da barra */
+    background-color: #66666633; /* Cor da barra */
+  }
+
+  /* Artigos 7 e 8 (primeiros 2 itens renderizados no DOM) */
+  .lastFourArticlesGroup > .lastFourArticleLayout:nth-child(1),
+  .lastFourArticlesGroup > .lastFourArticleLayout:nth-child(2) {
+    order: 1; /* Vêm primeiro */
+  }
+
+  /* Artigos 9 e 10 (últimos 2 itens renderizados no DOM) */
+  .lastFourArticlesGroup > .lastFourArticleLayout:nth-child(3),
+  .lastFourArticlesGroup > .lastFourArticleLayout:nth-child(4) {
+    order: 2; /* Vêm depois, na linha de baixo (graças ao grid) */
+  }
+
+  /* Ajusta o layout interno dos cards para parecerem mais com blocos de grid */
+  .lastFourArticlesGroup .cardBodyBase {
+    flex-direction: row-reverse; /* Imagem acima do texto */
+    align-items: flex-start; /* Centraliza a imagem */
+    gap: 10px; /* Espaçamento entre imagem e texto */
+  }
+  .lastFourArticlesGroup .newsImgSmall {
+    width: 108px; /* Aumenta um pouco a imagem para o layout 2x2 */
+    height: 108px;
+  }
+  .lastFourArticlesGroup .newsTitleLastFour {
+    font-size: 1.05rem; /* Título um pouco maior para este layout */
+  }
+  .lastFourArticlesGroup .newsAuthorBase,
+  .lastFourArticlesGroup .newsTimePublishedBase {
+      font-size: 0.8rem;
   }
 }
 
@@ -333,19 +399,45 @@
     font-size: 1rem;
   }
 
-  /* GRUPO 3: Últimos quatro artigos */
-  .lastFourArticleLayout .cardBodyBase {
-    flex-direction: row-reverse; /* Mantém row-reverse no mobile */
+  /* GRUPO 3: Últimos quatro artigos - Volta para uma única coluna */
+  .lastFourArticlesGroup {
+    grid-template-columns: 1fr; /* Volta para uma única coluna */
+    gap: 15px; /* Mantém um bom espaçamento */
+    padding: 0.8rem 0;
+  }
+
+  /* NOVO: Esconde a barra vertical quando o layout é de uma coluna */
+  .lastFourArticlesGroup > .lastFourArticleLayout:nth-child(2n - 1)::after {
+    content: none;
+  }
+
+  /* Também precisamos restaurar a borda superior e padding para cada card */
+  .lastFourArticlesGroup > .lastFourArticleLayout {
+    border-top: 1px solid #66666633; /* Restaura a borda superior individual */
+    padding-top: 1rem; /* Restaura o padding superior */
+  }
+  /* O primeiro item do grupo talvez não precise de border-top no mobile, se o layout acima já tiver uma divisória.
+     Ajuste conforme o design desejado. Se quiser que o primeiro item do grupo (Artigo 7) não tenha borda superior
+     no mobile, pode adicionar: */
+  .lastFourArticlesGroup > .lastFourArticleLayout:first-child {
+     border-top: none;
+     padding-top: 0;
+  }
+  
+
+  /* Reverte o layout interno do card para mobile para corresponder aos outros layouts de lista */
+  .lastFourArticlesGroup .cardBodyBase {
+    flex-direction: row-reverse; /* Imagem na direita, texto na esquerda */
     align-items: flex-start;
     text-align: left;
     gap: 15px;
   }
-  .newsImgSmall {
-    width: 90px; /* Mantém 90x90 no mobile */
-    height: 90px;
+  .lastFourArticlesGroup .newsImgSmall {
+    width: 195px; /* Volta para o tamanho original no mobile */
+    height: 195px;
   }
-  .newsTitleLastFour {
-    font-size: 1rem; /* Ajusta tamanho do título para mobile */
+  .lastFourArticlesGroup .newsTitleLastFour {
+    font-size: 1.2rem;
   }
 
   /* GRUPO 4: Artigos de lista padrão */
@@ -378,13 +470,13 @@
   .newsTitleCarousel {
     font-size: 0.9rem;
   }
-  .newsImgSmall {
-    width: 80px; /* Imagem 80x80 para últimos quatro em mobile menor */
+  .lastFourArticlesGroup .newsImgSmall {
+    width: 80px; 
     height: 80px;
   }
-  .newsTitleLastFour {
-    font-size: 0.9rem;
-  }
+  /* .lastFourArticlesGroup .newsTitleLastFour {
+    font-size: 1rem;
+  } */
   .defaultArticleLayout .newsImgDefault {
     height: 120px;
   }
