@@ -103,7 +103,7 @@
 / ========================================= */
 .mainArticleLayout {
   border-top: none;
-  padding: 0 0 1rem 0;
+  padding: 1rem 0;
 }
 
 .mainArticleLayout .cardBodyBase {
@@ -125,7 +125,8 @@
 / ========================================= */
 .carouselContainer {
   /* Herda .newsCardBase para border-top e padding no container geral do carrossel */
-  padding-bottom: 0; /* Ajusta o padding para melhor visualização */
+  border-bottom: 1px solid #66666633; /* Borda superior comum para separar cards */
+
 }
 
 .carouselViewport {
@@ -143,10 +144,8 @@
 .carouselNavigationButtons {
   display: flex;
   justify-content: flex-end;
-  gap: 15px;
-  margin: 10px 0 15px 0;
-  border-bottom: 2px solid #66666633;
-  padding-bottom: 15px;
+  gap: 10px;
+  margin: 10px 0;
 }
 
 .carouselNavigationButtons button {
@@ -274,6 +273,10 @@
   .newsImgCarousel { 
     width: 185px;
     height: 185px;
+  }
+
+  .carouselInnerTrack {
+    gap: 25px;
   }
 
   /*
