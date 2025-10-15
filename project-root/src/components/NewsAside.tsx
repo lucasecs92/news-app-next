@@ -209,12 +209,9 @@ export default function NewsAside() {
   // Lógica para determinar cards por página e calcular o offset de slide
   useEffect(() => {
     const handleResize = () => {
-      // Ajusta effectiveCardsPerPage com base no tamanho da tela
-      if (window.innerWidth <= 750) {
-        setEffectiveCardsPerPage(1);
-      } else {
-        setEffectiveCardsPerPage(baseCardsPerPage); // Retorna ao padrão (2)
-      }
+      // ESTA É A ÚNICA LINHA MODIFICADA para o carrossel.
+      // Agora, effectiveCardsPerPage sempre será '2', independentemente do tamanho da tela.
+      setEffectiveCardsPerPage(baseCardsPerPage);
 
       const timeoutId = setTimeout(() => {
         if (carouselViewportRef.current) {

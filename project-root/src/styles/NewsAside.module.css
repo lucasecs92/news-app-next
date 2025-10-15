@@ -1,27 +1,24 @@
-/* NewsAside.module.css */
-
 /* ========================================= /
 / ESTILOS BASE (Aplicados a todos os cards ou a elementos comuns) /
 / ========================================= */
 .newsCardBase {
-  border-top: 1px solid #66666633; /* Borda superior comum para separar cards */
-  padding: 1rem 0; /* Padding vertical comum para o conteúdo do card */
+  border-top: 1px solid #66666633;
+  padding: 1rem 0; 
 }
 
 .cardBodyBase {
   display: flex;
-  flex-direction: column; /* Layout padrão: imagem e texto em coluna */
-  gap: 15px; /* Espaçamento padrão entre imagem e container de texto */
+  flex-direction: column; 
+  gap: 15px; 
 }
 
 /* Variação específica para layout row-reverse (usado pelo grupo "Últimos Quatro") */
 .cardBodyRowReverse {
   flex-direction: row-reverse;
-  align-items: flex-start; /* Alinha o conteúdo ao topo quando em linha */
+  align-items: flex-start; 
 }
 
 .newsTextBase {
-  /* Estilos base para o container de texto */
   display: flex;
   flex-direction: column;
   text-align: start;
@@ -83,7 +80,6 @@
   color: #999;
 }
 
-
 /* Mensagens gerais de carregamento/erro */
 .errorMessage {
   color: red;
@@ -96,7 +92,6 @@
   text-align: center;
 }
 
-
 /* ========================================= /
 / GRUPO 1: ARTIGO 1 e ARTIGO 6 (índices 0 e 5) /
 / Mesmo efeito: imagem grande, descrição completa, layout em coluna /
@@ -107,38 +102,35 @@
 }
 
 .mainArticleLayout .cardBodyBase {
-  flex-direction: column; /* Garante layout em coluna */
-  gap: 15px; /* Espaço entre imagem e texto */
+  flex-direction: column; 
+  gap: 15px; 
 }
 
-.newsImgLarge { /* Imagem grande para este grupo */
+.newsImgLarge { 
   width: 100%;
   height: auto;
   object-fit: cover;
-  flex-shrink: 0; /* Impede que a imagem encolha */
+  flex-shrink: 0; 
 }
-
 
 /* ========================================= /
 / GRUPO 2: ARTIGOS DO CARROSSEL (índices 1, 2, 3, 4) /
 / Imagem menor, sem descrição visível, layout em coluna (desktop), linha (mobile) /
 / ========================================= */
 .carouselContainer {
-  /* Herda .newsCardBase para border-top e padding no container geral do carrossel */
-  border-bottom: 1px solid #66666633; /* Borda superior comum para separar cards */
-
+  border-bottom: 1px solid #66666633;
 }
 
 .carouselViewport {
   width: 100%;
-  overflow: hidden; /* Esconde os cards que estão fora da visualização */
+  overflow: hidden; 
 }
 
 .carouselInnerTrack {
   display: flex;
-  transition: transform 0.5s ease-in-out; /* Transição suave para o slide */
-  gap: 15px; /* Espaçamento entre os cards do carrossel */
-  padding-bottom: 15px; /* Espaço entre cards e botões de navegação */
+  transition: transform 0.5s ease-in-out;
+  gap: 15px; 
+  padding-bottom: 15px; 
 }
 
 .carouselNavigationButtons {
@@ -171,87 +163,74 @@
 
 /* Layout dos cards individuais do carrossel */
 .carouselCardLayout {
-  border-top: none; /* Cards do carrossel não têm borda superior individual */
-  padding: 0; /* Remove padding padrão herdado de .newsCardBase */
-  flex-shrink: 0; /* Impede que os cards encolham */
-  /* flex-basis e max-width são controlados por inline style no componente NewsAside.tsx */
-  position: relative; /* Necessário para o pseudo-elemento ::after */
+  border-top: none; 
+  padding: 0; 
+  flex-shrink: 0; 
+  position: relative; 
 }
 
 .carouselCardLayout .cardBodyBase {
-  flex-direction: column; /* Layout padrão para desktop: imagem e texto em coluna */
-  align-items: center; /* Centraliza imagem/texto no desktop */
-  padding: 0; /* Remove padding padrão */
-  gap: 5px; /* Pequeno espaçamento entre os elementos */
+  flex-direction: column; 
+  align-items: center; 
+  padding: 0;
+  gap: 5px; 
 }
 
-.newsImgCarousel { /* Imagem específica para o carrossel */
+.newsImgCarousel { 
   width: 100%;
   height: 151.45px;
   object-fit: cover;
   flex-shrink: 0;
 }
 
-
 /* ========================================= /
 / GRUPO 3: ÚLTIMOS QUATRO ARTIGOS (índices 6, 7, 8, 9) /
 / Layout row-reverse, imagem pequena (90x90), sem descrição /
 / ========================================= */
-.lastFourArticleLayout {
-  /* Herda .newsCardBase para border-top e padding */
-}
 
 /* Estilos para o container dos últimos 4 artigos */
 .lastFourArticlesGroup {
-  display: flex; /* Padrão: empilha verticalmente */
+  display: flex; 
   flex-direction: column;
-  gap: 15px; /* Espaçamento entre os cards quando em coluna */
+  gap: 15px; 
 }
 
-/* O .cardBodyRowReverse já define flex-direction: row-reverse para o corpo do card */
-
-.newsImgSmall { /* Imagem pequena específica para este grupo */
+.newsImgSmall { 
   width: 90px;
   height: 90px;
   object-fit: cover;
-  flex-shrink: 0; /* Impede que a imagem encolha */
+  flex-shrink: 0; 
 }
-
 
 /* ========================================= /
 / GRUPO 4: ARTIGOS DE LISTA PADRÃO (índice 10 em diante) /
 / Item de lista padrão: layout em coluna, imagem média, descrição completa /
 / ========================================= */
-.defaultArticleLayout {
-  /* Herda .newsCardBase para border-top e padding */
-}
 
 .defaultArticleLayout .cardBodyBase {
-  flex-direction: column; /* Garante layout em coluna */
-  gap: 15px; /* Espaçamento padrão */
+  flex-direction: column; 
+  gap: 15px; 
 }
 
-.newsImgDefault { /* Imagem de tamanho médio para este grupo */
+.newsImgDefault { 
   width: 100%;
-  height: 180px; /* Exemplo de altura fixa */
+  height: 180px; 
   object-fit: cover;
   flex-shrink: 0;
 }
-
 
 /* ========================================= /
 / MEDIA QUERIES (Ajustes para diferentes tamanhos de tela) /
 / ========================================= */
 
 @media screen and (max-width: 1200px) {
-  .newsImgCarousel { /* Imagem específica para o carrossel */
+  .newsImgCarousel { 
     width: 130px;
     height: 130px;
   }
 }
 
 @media screen and (max-width: 1070px) {
-  /* Ajustes específicos do carrossel */
   .carouselContainer {
     padding: 1rem;
   }
@@ -265,19 +244,11 @@
     height: 185px;
   }
 
-  /* .carouselInnerTrack {
-    gap: 25px;
-  } */
-
-  /*
-    NOVO: Reordenação, layout de grid e DIVISORES VERTICAIS
-    para artigos 7-10 a partir de 1070px
-  */
   .lastFourArticlesGroup {
-    display: grid; /* Passa para layout de grid */
-    grid-template-columns: 1fr 1fr; /* Duas colunas de largura igual */
-    gap: 20px; /* Espaçamento entre os itens do grid (horizontal e vertical) */
-    padding: 1rem 0; /* Ajusta o padding para o grupo */
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px; 
+    padding: 1rem 0; 
     border-top: 1px solid #66666633;
     border-bottom: 1px solid #66666633; 
   }
@@ -285,8 +256,8 @@
   /* Garante que os itens do grid tenham position:relative para posicionar o ::after */
   .lastFourArticlesGroup > .lastFourArticleLayout {
     position: relative; 
-    border-top: none; /* Remove a borda superior individual para um visual de grid mais limpo */
-    padding-top: 0; /* Remove padding superior para a borda do grid */
+    border-top: none; 
+    padding-top: 0; 
   }
 
   /* Cria a barra vertical no espaço entre a primeira e a segunda coluna */
@@ -296,35 +267,34 @@
     position: absolute;
     right: -10px; /* Metade do valor do GAP (20px / 2 = 10px). Posiciona a barra no meio do espaçamento */
     top: 0; /* Começa no topo do item do grid */
-    height: 100%; /* Faz a barra ter a altura total do item do grid */
+    height: 100%;
     width: 1px; /* Espessura da barra */
-    background-color: #66666633; /* Cor da barra */
+    background-color: #66666633; 
   }
 
   /* Artigos 7 e 8 (primeiros 2 itens renderizados no DOM) */
   .lastFourArticlesGroup > .lastFourArticleLayout:nth-child(1),
   .lastFourArticlesGroup > .lastFourArticleLayout:nth-child(2) {
-    order: 1; /* Vêm primeiro */
+    order: 1; 
   }
 
   /* Artigos 9 e 10 (últimos 2 itens renderizados no DOM) */
   .lastFourArticlesGroup > .lastFourArticleLayout:nth-child(3),
   .lastFourArticlesGroup > .lastFourArticleLayout:nth-child(4) {
-    order: 2; /* Vêm depois, na linha de baixo (graças ao grid) */
+    order: 2; 
   }
 
-  /* Ajusta o layout interno dos cards para parecerem mais com blocos de grid */
   .lastFourArticlesGroup .cardBodyBase {
-    flex-direction: row-reverse; /* Imagem acima do texto */
-    align-items: flex-start; /* Centraliza a imagem */
-    gap: 10px; /* Espaçamento entre imagem e texto */
+    flex-direction: row-reverse; 
+    align-items: flex-start; 
+    gap: 10px; 
   }
   .lastFourArticlesGroup .newsImgSmall {
-    width: 108px; /* Aumenta um pouco a imagem para o layout 2x2 */
+    width: 108px; 
     height: 108px;
   }
   .lastFourArticlesGroup .newsTitleLastFour {
-    font-size: 1.05rem; /* Título um pouco maior para este layout */
+    font-size: 1.05rem; 
   }
   .lastFourArticlesGroup .newsAuthorBase,
   .lastFourArticlesGroup .newsTimePublishedBase {
@@ -333,12 +303,11 @@
 }
 
 @media screen and (max-width: 750px) {
-  /* Ajustes comuns para telas menores */
   .newsCardBase {
-    padding: 0.8rem 0; /* Menos padding vertical */
+    padding: 0.8rem 0; 
   }
   .newsTitleBase {
-    font-size: 1.2rem; /* Ajusta o tamanho geral do título */
+    font-size: 1.2rem; 
     padding: 5px 0;
   }
   .newsDescriptionBase {
@@ -350,31 +319,23 @@
 
   /* GRUPO 1: Artigos principais (1 e 6) */
   .mainArticleLayout .newsImgLarge {
-    height: 200px; /* Ajusta altura da imagem para mobile */
+    height: 200px; 
   }
   .mainArticleLayout .newsTitleBase {
-    font-size: 1.3rem; /* Título um pouco menor para mobile */
+    font-size: 1.3rem;
   }
 
-  /* GRUPO 2: Artigos do carrossel */
-  .carouselContainer {
-    padding: 0.8rem 0; /* Ajusta padding do container */
-  }
+  /* GRUPO 2: Artigos do carrossel - COMENTE/REMVA ESTAS REGRAS */
   .carouselInnerTrack {
-    gap: 15px;
-  }
-  .carouselCardLayout:not(:last-child)::after {
-    content: none; /* Oculta o pseudo-elemento */
+    padding-bottom: 0;
   }
   .carouselCardLayout .cardBodyBase {
-    flex-direction: row; /* Carrossel: layout em linha no mobile */
-    align-items: flex-start;
-    text-align: left;
-    gap: 15px;
+    flex-direction: column;
+    padding-right: 4rem;
   }
   .newsImgCarousel {
-    width: 80px; /* Imagem do carrossel 80x80 no mobile */
-    height: 80px;
+    width: 226px;
+    height: 226px;
   }
   .newsTitleCarousel {
     font-size: 1rem;
@@ -388,14 +349,13 @@
     gap: 10px;
   }
   .carouselNavigationButtons button {
-    padding: 8px 12px;
     font-size: 1rem;
   }
 
   /* GRUPO 3: Últimos quatro artigos - Volta para uma única coluna */
   .lastFourArticlesGroup {
-    grid-template-columns: 1fr; /* Volta para uma única coluna */
-    gap: 15px; /* Mantém um bom espaçamento */
+    grid-template-columns: 1fr; 
+    gap: 15px; 
     padding: 0.8rem 0;
   }
 
@@ -404,29 +364,24 @@
     content: none;
   }
 
-  /* Também precisamos restaurar a borda superior e padding para cada card */
   .lastFourArticlesGroup > .lastFourArticleLayout {
-    border-top: 1px solid #66666633; /* Restaura a borda superior individual */
-    padding-top: 1rem; /* Restaura o padding superior */
+    border-top: 1px solid #66666633; 
+    padding-top: 1rem; 
   }
-  /* O primeiro item do grupo talvez não precise de border-top no mobile, se o layout acima já tiver uma divisória.
-     Ajuste conforme o design desejado. Se quiser que o primeiro item do grupo (Artigo 7) não tenha borda superior
-     no mobile, pode adicionar: */
+  
   .lastFourArticlesGroup > .lastFourArticleLayout:first-child {
      border-top: none;
      padding-top: 0;
   }
   
-
-  /* Reverte o layout interno do card para mobile para corresponder aos outros layouts de lista */
   .lastFourArticlesGroup .cardBodyBase {
-    flex-direction: row-reverse; /* Imagem na direita, texto na esquerda */
+    flex-direction: row-reverse; 
     align-items: flex-start;
     text-align: left;
     gap: 15px;
   }
   .lastFourArticlesGroup .newsImgSmall {
-    width: 195px; /* Volta para o tamanho original no mobile */
+    width: 195px; 
     height: 195px;
   }
   .lastFourArticlesGroup .newsTitleLastFour {
@@ -443,9 +398,8 @@
 }
 
 @media screen and (max-width: 550px) {
-  /* Ajustes adicionais para telas mobile menores */
   .newsCardBase {
-    padding: 0.6rem 0; /* Menos padding ainda */
+    padding: 0.6rem 0; 
   }
   .mainArticleLayout .newsImgLarge {
     height: 180px;
@@ -453,12 +407,15 @@
   .mainArticleLayout .newsTitleBase {
     font-size: 1.2rem;
   }
+  .carouselCardLayout .cardBodyBase {
+    padding-right: 2rem;
+  }
   .carouselInnerTrack {
     gap: 10px;
   }
   .newsImgCarousel {
-    width: 70px; /* Imagem do carrossel 70x70 em mobile menor */
-    height: 70px;
+    width: 150px;
+    height: 150px;
   }
   .newsTitleCarousel {
     font-size: 0.9rem;
@@ -467,9 +424,6 @@
     width: 80px; 
     height: 80px;
   }
-  /* .lastFourArticlesGroup .newsTitleLastFour {
-    font-size: 1rem;
-  } */
   .defaultArticleLayout .newsImgDefault {
     height: 120px;
   }
