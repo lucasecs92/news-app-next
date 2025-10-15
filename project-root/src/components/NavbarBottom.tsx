@@ -1,25 +1,34 @@
+// NavbarBottom.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import styles from "../styles/NavbarBottom.module.css";
+// Importar os tipos de categoria do config
 import {
-  loadEntertainmentContent,
-  loadBusinessContent,
-  loadSportsContent,
-  loadHealthContent,
-  loadTechnologyContent,
-  loadScienceContent,
-} from "../utils/contentLoaders";
+  CATEGORY_GENERAL, // Adicionar para a opção "Principal"
+  CATEGORY_BUSINESS,
+  CATEGORY_ENTERTAINMENT,
+  CATEGORY_SPORTS,
+  CATEGORY_HEALTH,
+  CATEGORY_TECHNOLOGY,
+  CATEGORY_SCIENCE,
+} from "../utils/config";
 
-const NavbarBottom: React.FC = () => {
+// Definir as props esperadas por NavbarBottom
+interface NavbarBottomProps {
+  setActiveCategory: (category: string) => void;
+}
+
+const NavbarBottom: React.FC<NavbarBottomProps> = ({ setActiveCategory }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isFixed, setIsFixed] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
-  const handleCategoryClick = (callback: () => void) => {
-    callback();
-    if (window.innerWidth < 870) setIsMenuOpen(false);
+  // A função handleCategoryClick agora recebe a string da categoria
+  const handleCategoryClick = (category: string) => {
+    setActiveCategory(category); // Define a categoria ativa no page.tsx
+    if (window.innerWidth < 870) setIsMenuOpen(false); // Fecha o menu em telas pequenas
   };
 
   useEffect(() => {
@@ -89,18 +98,22 @@ const NavbarBottom: React.FC = () => {
 
       <ul
         className={styles.ulList}
-        style={{ display: isMenuOpen || window.innerWidth >= 870 ? "flex" : "none" }}
+        style={{
+          display: isMenuOpen || window.innerWidth >= 870 ? "flex" : "none",
+        }}
       >
         {[
-          { name: "Entretenimento", action: loadEntertainmentContent },
-          { name: "Negócios", action: loadBusinessContent },
-          { name: "Esportes", action: loadSportsContent },
-          { name: "Saúde", action: loadHealthContent },
-          { name: "Tecnologia", action: loadTechnologyContent },
-          { name: "Ciência", action: loadScienceContent },
+          { name: "Principal", category: CATEGORY_GENERAL }, // Adicionado para voltar à MainNews
+          { name: "Entretenimento", category: CATEGORY_ENTERTAINMENT },
+          { name: "Negócios", category: CATEGORY_BUSINESS },
+          { name: "Esportes", category: CATEGORY_SPORTS },
+          { name: "Saúde", category: CATEGORY_HEALTH },
+          { name: "Tecnologia", category: CATEGORY_TECHNOLOGY },
+          { name: "Ciência", category: CATEGORY_SCIENCE },
         ].map((item) => (
           <li key={item.name} className={styles.ulListItem}>
-            <a onClick={() => handleCategoryClick(item.action)}>{item.name}</a>
+            {/* Passamos a string da categoria para o handler */}
+            <a onClick={() => handleCategoryClick(item.category)}>{item.name}</a>
           </li>
         ))}
       </ul>

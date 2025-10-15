@@ -1,0 +1,66 @@
+/* src/styles/newsCard.module.css */
+.newsCardTitle {
+  font-size: 2.5rem;
+  padding: 1rem 0 3rem 0;
+  color: #343434;
+}
+
+/* Os seletores de ID específicos (e.g., #news-card-0) não são idiomáticos em React com CSS Modules.
+   Em vez disso, aplique classes diretamente aos componentes.
+   Para manter a especificidade, você pode usar classes dinâmicas ou remover os IDs se a estilização for a mesma para todas as cards.
+   Para este exemplo, vou assumir que a intenção é aplicar esses estilos a todas as .newsCard e .cardBody.
+   Se a intenção era que APENAS os 20 primeiros tivessem isso, precisaria de uma lógica diferente no componente.
+*/
+.cardBody {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  gap: 3rem;
+  padding: 1rem 0;
+}
+.newsImg {
+  width: 40%;
+}
+
+.newsCard {
+  border-top: 1px solid #343434;
+  padding: 1rem 0;
+}
+
+.navNewsTitle {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.navNewsDescription {
+  font-size: 0.9rem;
+  padding: 15px 0;
+  color: #666;
+}
+
+.navNewsTimePublished {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.loadingMessage, .errorMessage {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.errorMessage {
+  color: #d9534f; /* Cor vermelha para erros */
+}
+
+
+@media screen and (max-width: 750px) {
+  .cardBody {
+    flex-direction: column-reverse;
+    gap: 0;
+  }
+  .newsImg {
+    width: auto;
+  }
+}

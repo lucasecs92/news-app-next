@@ -1,3 +1,4 @@
+/* styles/index.module.css */
 .container {
     padding: 0 18.5%;
 }
@@ -9,12 +10,19 @@
 }
 
 .mainNews {
-    width: 70%;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 0 1rem 0 0;
-    border-right: 1px solid #ddd;
+    padding: 0 1rem 0 0; /* Padding padrão com aside */
+    border-right: 1px solid #ddd; /* Borda padrão com aside */
 }
+
+/* Nova classe para quando o aside não estiver presente */
+.mainNewsNoAside {
+    padding-right: 0; /* Remove o padding da direita */
+    border-right: none; /* Remove a borda da direita */
+}
+
 
 .asideWrap {
     border-left: 1px solid #ddd;
@@ -67,6 +75,9 @@
         border-right: none;
         padding: 0;
     }
+    /* A classe .mainNewsNoAside não é mais estritamente necessária aqui,
+       pois o media query já remove o padding e a borda.
+       Mas mantê-la não causa problemas e cobre o caso antes do breakpoint. */
     .asideWrap {
         width: 100%;
         border-left: none;
