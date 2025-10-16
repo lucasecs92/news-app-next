@@ -20,7 +20,7 @@ export const MainNews: React.FC = () => {
   useEffect(() => {
     const getNews = async () => {
       try {
-        // MODIFICAÇÃO INÍCIO: Lógica para evitar consumo de API em desenvolvimento
+        // Lógica para evitar consumo de API em desenvolvimento
         if (process.env.NODE_ENV === "development") {
           const cacheKey = "newsData_general";
           const cachedNews = sessionStorage.getItem(cacheKey);
@@ -31,7 +31,6 @@ export const MainNews: React.FC = () => {
             return; // Interrompe a execução para não chamar a API
           }
         }
-        // FIM DA MODIFICAÇÃO
 
         const response = await fetch(
           `${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_GENERAL}`
@@ -47,13 +46,12 @@ export const MainNews: React.FC = () => {
           (a: Article) => a.title !== "[Removed]" && a.description
         );
 
-        // MODIFICAÇÃO INÍCIO: Armazena os dados no cache após a chamada em desenvolvimento
+        // Armazena os dados no cache após a chamada em desenvolvimento
         if (process.env.NODE_ENV === "development") {
            const cacheKey = "newsData_general";
            console.log("📡 [MainNews] Buscando da API e salvando no cache (sessionStorage).");
            sessionStorage.setItem(cacheKey, JSON.stringify(validArticles));
         }
-        // FIM DA MODIFICAÇÃO
 
         setArticles(validArticles);
       } catch (err) {

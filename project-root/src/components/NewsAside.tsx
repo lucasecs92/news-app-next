@@ -76,7 +76,7 @@ export default function NewsAside() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        // MODIFICAÇÃO INÍCIO: Lógica para evitar consumo de API em desenvolvimento
+        // Lógica para evitar consumo de API em desenvolvimento
         if (process.env.NODE_ENV === "development") {
           const cacheKey = "newsData_aside";
           const cachedNews = sessionStorage.getItem(cacheKey);
@@ -87,7 +87,6 @@ export default function NewsAside() {
             return; // Interrompe a execução para não chamar a API
           }
         }
-        // MODIFICAÇÃO FIM
 
         const res = await fetch(
           `${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_ENTERTAINMENT}`
@@ -100,13 +99,12 @@ export default function NewsAside() {
         if (data.articles && Array.isArray(data.articles)) {
           const validArticles = data.articles.slice(0, 15);
 
-          // MODIFICAÇÃO INÍCIO: Armazena os dados no cache após a chamada em desenvolvimento
+          // Armazena os dados no cache após a chamada em desenvolvimento
           if (process.env.NODE_ENV === "development") {
              const cacheKey = "newsData_aside";
              console.log("📡 [NewsAside] Buscando da API e salvando no cache (sessionStorage).");
              sessionStorage.setItem(cacheKey, JSON.stringify(validArticles));
           }
-          // MODIFICAÇÃO FIM
 
           setArticles(validArticles);
         } else {

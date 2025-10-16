@@ -5,9 +5,8 @@ import { useEffect, useState } from "react";
 import styles from "../styles/NavbarBottom.module.css";
 // Importar os tipos de categoria do config
 import {
-  CATEGORY_GENERAL, // Adicionar para a opção "Principal"
-  CATEGORY_BUSINESS,
   CATEGORY_ENTERTAINMENT,
+  CATEGORY_BUSINESS,
   CATEGORY_SPORTS,
   CATEGORY_HEALTH,
   CATEGORY_TECHNOLOGY,
@@ -25,10 +24,9 @@ const NavbarBottom: React.FC<NavbarBottomProps> = ({ setActiveCategory }) => {
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
-  // A função handleCategoryClick agora recebe a string da categoria
   const handleCategoryClick = (category: string) => {
-    setActiveCategory(category); // Define a categoria ativa no page.tsx
-    if (window.innerWidth < 870) setIsMenuOpen(false); // Fecha o menu em telas pequenas
+    setActiveCategory(category);
+    if (window.innerWidth < 870) setIsMenuOpen(false);
   };
 
   useEffect(() => {
@@ -103,7 +101,6 @@ const NavbarBottom: React.FC<NavbarBottomProps> = ({ setActiveCategory }) => {
         }}
       >
         {[
-          { name: "Principal", category: CATEGORY_GENERAL }, // Adicionado para voltar à MainNews
           { name: "Entretenimento", category: CATEGORY_ENTERTAINMENT },
           { name: "Negócios", category: CATEGORY_BUSINESS },
           { name: "Esportes", category: CATEGORY_SPORTS },
@@ -112,7 +109,6 @@ const NavbarBottom: React.FC<NavbarBottomProps> = ({ setActiveCategory }) => {
           { name: "Ciência", category: CATEGORY_SCIENCE },
         ].map((item) => (
           <li key={item.name} className={styles.ulListItem}>
-            {/* Passamos a string da categoria para o handler */}
             <a onClick={() => handleCategoryClick(item.category)}>{item.name}</a>
           </li>
         ))}
