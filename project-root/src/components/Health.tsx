@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image"; 
 import { API_URL, API_KEY, COUNTRY, CATEGORY_HEALTH } from "../utils/config";
 import styles from "../styles/NewsCard.module.css";
 import { timeSince } from "../utils/utils";
@@ -25,7 +26,6 @@ const Health: React.FC = () => {
         if (process.env.NODE_ENV === "development") {
           const cacheKey = "newsData_health";
           const cachedNews = sessionStorage.getItem(cacheKey);
-
           if (cachedNews) {
             console.log("🗂️ [Health] Usando dados do cache (sessionStorage).");
             setArticles(JSON.parse(cachedNews));
@@ -79,23 +79,17 @@ const Health: React.FC = () => {
   return (
     <section id="health-content">
       <h2 className={styles.newsCardTitle}>Saúde</h2>
-      {articles.length === 0 && !loading && !error ? (
-        <p>Nenhuma notícia de Saúde encontrada.</p>
-      ) : (
+      {articles.length > 0 ? (
         articles.map((article, index) => (
           <section key={index} className={styles.newsCard}>
             <section className={styles.cardBody}>
-              <img
+              <Image
                 src={article.image || "https://via.placeholder.com/150"}
                 className={styles.newsImg}
                 alt={article.title}
                 title={article.title}
-                onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    if (target.src !== "https://via.placeholder.com/150") {
-                        target.src = "https://via.placeholder.com/150";
-                    }
-                }}
+                width={150}
+                height={100}
               />
               <section className={styles.newsText}>
                 <h2 className={styles.navNewsTitle}>{article.title}</h2>
@@ -107,6 +101,8 @@ const Health: React.FC = () => {
             </section>
           </section>
         ))
+      ) : (
+        <p>Nenhuma notícia de Saúde encontrada.</p>
       )}
     </section>
   );
