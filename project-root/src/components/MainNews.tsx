@@ -1,3 +1,4 @@
+// MainNews.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -19,39 +20,19 @@ export const MainNews: React.FC = () => {
   useEffect(() => {
     const getNews = async () => {
       try {
-        // ---------------------------
-        // Evita chamadas na fase dev
-        // ---------------------------
+        // MODIFICAÇÃO INÍCIO: Lógica para evitar consumo de API em desenvolvimento
         if (process.env.NODE_ENV === "development") {
-          const stored = sessionStorage.getItem("newsData");
-          if (stored) {
-            console.log("🗂️ Usando notícias armazenadas no sessionStorage (dev)");
-            setArticles(JSON.parse(stored));
-            return;
-          } else {
-            console.log("📡 Buscando notícias pela primeira vez (dev)");
-            const response = await fetch(
-              `${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_GENERAL}`
-            );
-            if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-            const data = await response.json();
+          const cacheKey = "newsData_general";
+          const cachedNews = sessionStorage.getItem(cacheKey);
 
-            if (!data.articles || !Array.isArray(data.articles))
-              throw new Error("Resposta inválida da API");
-
-            const validArticles = data.articles.filter(
-              (a: Article) => a.title !== "[Removed]" && a.description
-            );
-
-            sessionStorage.setItem("newsData", JSON.stringify(validArticles));
-            setArticles(validArticles);
-            return;
+          if (cachedNews) {
+            console.log("🗂️ [MainNews] Usando dados do cache (sessionStorage).");
+            setArticles(JSON.parse(cachedNews));
+            return; // Interrompe a execução para não chamar a API
           }
         }
+        // FIM DA MODIFICAÇÃO
 
-        // ---------------------------
-        // Em produção → sempre usa API real
-        // ---------------------------
         const response = await fetch(
           `${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_GENERAL}`
         );
@@ -65,6 +46,14 @@ export const MainNews: React.FC = () => {
         const validArticles = data.articles.filter(
           (a: Article) => a.title !== "[Removed]" && a.description
         );
+
+        // MODIFICAÇÃO INÍCIO: Armazena os dados no cache após a chamada em desenvolvimento
+        if (process.env.NODE_ENV === "development") {
+           const cacheKey = "newsData_general";
+           console.log("📡 [MainNews] Buscando da API e salvando no cache (sessionStorage).");
+           sessionStorage.setItem(cacheKey, JSON.stringify(validArticles));
+        }
+        // FIM DA MODIFICAÇÃO
 
         setArticles(validArticles);
       } catch (err) {
@@ -85,6 +74,9 @@ export const MainNews: React.FC = () => {
 
   return (
     <section id="main-news">
+       {articles.length === 0 && !error && (
+        <p className={styles.loadingMessage}>Carregando notícias principais...</p>
+      )}
       {articles.map((article, index) => (
         <section
           key={index}

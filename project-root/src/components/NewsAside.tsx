@@ -1,5 +1,3 @@
-// NewsAside.tsx
-
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -17,19 +15,20 @@ interface Article {
 }
 
 // Componente auxiliar para renderizar um card de artigo com estilos flexíveis
+// Nenhuma alteração necessária neste componente auxiliar
 const ArticleCard = ({
   article,
   index,
-  layoutClasses = [], // Classes aplicadas ao <section> externo do card
-  cardBodyClasses = [], // Classes aplicadas à section do corpo do card (e.g., para row-reverse)
+  layoutClasses = [],
+  cardBodyClasses = [],
   imageClass,
-  textClasses = [], // Classes para o container de texto
+  textClasses = [],
   titleClass = styles.newsTitleBase,
   descriptionClass = styles.newsDescriptionBase,
   timePublishedClass = styles.newsTimePublishedBase,
   authorClass = styles.newsAuthorBase,
   showDescription = true,
-  style = {}, // Para estilos inline como flexBasis do carrossel
+  style = {},
 }: {
   article: Article;
   index: number;
@@ -42,9 +41,8 @@ const ArticleCard = ({
   timePublishedClass?: string;
   authorClass?: string;
   showDescription?: boolean;
-  style?: React.CSSProperties; // Para estilos inline
+  style?: React.CSSProperties;
 }) => {
-  // Ignora artigos inválidos ou removidos
   if (!article || article.title === "[Removed]" || article.description === null) return null;
   
   const timeElapsed = timeSince(article.publishedAt);
@@ -68,7 +66,7 @@ export default function NewsAside() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const baseCardsPerPage = 2; // Exibe 2 cards por vez no desktop
+  const baseCardsPerPage = 2;
   const [effectiveCardsPerPage, setEffectiveCardsPerPage] = useState(baseCardsPerPage);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -76,108 +74,21 @@ export default function NewsAside() {
   const [translateXOffset, setTranslateXOffset] = useState(0);
 
   useEffect(() => {
-    // Evita consumo da API durante desenvolvimento sem chave
-    if (!API_KEY) {
-      console.warn("⚠️ API_KEY ausente. Renderizando dados mockados para evitar consumo da API.");
-      // Dados mockados garantindo que temos pelo menos 11 artigos para cobrir todos os grupos
-      const mockArticles: Article[] = [
-        // Artigo 1 (índice 0) - Estilo Principal
-        {
-          title: "Título de Exemplo Principal (Mock 1)",
-          description: "Esta é a descrição detalhada para o primeiro card de destaque. Ele ocupa a largura total e tem uma imagem maior.",
-          image: "https://via.placeholder.com/600x400/FF5733/FFFFFF?text=Main+News",
-          author: "Autor Destacado",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 1).toISOString(),
-        },
-        // Artigos 2, 3, 4, 5 (índices 1 a 4) - Estilo Carrossel
-        {
-          title: "Carrossel Notícia 1",
-          description: "Descrição para o card do carrossel número 1. Imagem 150x150, sem descrição visível.",
-          image: "https://via.placeholder.com/150x150/33FF57/FFFFFF?text=Carousel+1",
-          author: "Carrossel Autor 1",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 2).toISOString(),
-        },
-        {
-          title: "Carrossel Notícia 2",
-          description: "Descrição para o card do carrossel número 2. Imagem 150x150, sem descrição visível.",
-          image: "https://via.placeholder.com/150x150/3357FF/FFFFFF?text=Carousel+2",
-          author: "Carrossel Autor 2",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 3).toISOString(),
-        },
-        {
-          title: "Carrossel Notícia 3",
-          description: "Descrição para o card do carrossel número 3. Imagem 150x150, sem descrição visível.",
-          image: "https://via.placeholder.com/150x150/FF33A1/FFFFFF?text=Carousel+3",
-          author: "Carrossel Autor 3",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 4).toISOString(),
-        },
-        {
-          title: "Carrossel Notícia 4",
-          description: "Descrição para o card do carrossel número 4. Imagem 150x150, sem descrição visível.",
-          image: "https://via.placeholder.com/150x150/A1FF33/FFFFFF?text=Carousel+4",
-          author: "Carrossel Autor 4",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 5).toISOString(),
-        },
-        // Artigo 6 (índice 5) - Estilo Principal (igual ao Artigo 1)
-        {
-          title: "Notícia Importante (Mock 6)",
-          description: "Este artigo é o sexto na lista e deve ter o mesmo estilo do primeiro artigo, com imagem grande e descrição completa.",
-          image: "https://via.placeholder.com/600x400/FFC300/FFFFFF?text=Main+News+2",
-          author: "Autor Importante",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 6).toISOString(),
-        },
-        // Artigos 7, 8, 9, 10 (índices 6 a 9) - Estilo "Últimos Quatro" (imagem pequena, row-reverse, sem descrição)
-        {
-          title: "Última Notícia 1 (especial)",
-          description: "Primeiro dos últimos 4 artigos. Estilo diferenciado.",
-          image: "https://via.placeholder.com/100x100/C70039/FFFFFF?text=Last+1",
-          author: "Autor Especial 1",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 7).toISOString(),
-        },
-        {
-          title: "Última Notícia 2 (especial)",
-          description: "Segundo dos últimos 4 artigos. Imagem 90x90, sem descrição, row-reverse.",
-          image: "https://via.placeholder.com/100x100/900C3F/FFFFFF?text=Last+2",
-          author: "Autor Especial 2",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 8).toISOString(),
-        },
-        {
-          title: "Última Notícia 3 (especial)",
-          description: "Terceiro dos últimos 4 artigos. Imagem 90x90, sem descrição, row-reverse.",
-          image: "https://via.placeholder.com/100x100/581845/FFFFFF?text=Last+3",
-          author: "Autor Especial 3",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 9).toISOString(),
-        },
-        {
-          title: "Última Notícia 4 (especial)",
-          description: "Quarto e último artigo deste grupo. Imagem 90x90, sem descrição, row-reverse.",
-          image: "https://via.placeholder.com/100x100/281845/FFFFFF?text=Last+4",
-          author: "Autor Especial 4",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 10).toISOString(),
-        },
-        // Artigos restantes (índice 10 em diante) - Estilo Padrão/Lista
-        {
-          title: "Artigo Extra (Padrão 1)",
-          description: "Este é um artigo adicional, deve seguir o estilo de lista padrão (imagem média, descrição).",
-          image: "https://via.placeholder.com/300x200/123456/FFFFFF?text=Extra+Default+1",
-          author: "Autor Padrão",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 11).toISOString(),
-        },
-        {
-          title: "Artigo Extra (Padrão 2)",
-          description: "Para garantir que o tratamento de artigos adicionais está correto.",
-          image: "https://via.placeholder.com/300x200/654321/FFFFFF?text=Extra+Default+2",
-          author: "Outro Autor",
-          publishedAt: new Date(Date.now() - 3600 * 1000 * 12).toISOString(),
-        },
-      ];
-      setArticles(mockArticles);
-      return;
-    }
-
     const fetchNews = async () => {
       try {
-        console.log("📰 Buscando notícias do GNews...");
+        // MODIFICAÇÃO INÍCIO: Lógica para evitar consumo de API em desenvolvimento
+        if (process.env.NODE_ENV === "development") {
+          const cacheKey = "newsData_aside";
+          const cachedNews = sessionStorage.getItem(cacheKey);
+
+          if (cachedNews) {
+            console.log("🗂️ [NewsAside] Usando dados do cache (sessionStorage).");
+            setArticles(JSON.parse(cachedNews));
+            return; // Interrompe a execução para não chamar a API
+          }
+        }
+        // MODIFICAÇÃO FIM
+
         const res = await fetch(
           `${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_ENTERTAINMENT}`
         );
@@ -185,17 +96,25 @@ export default function NewsAside() {
         if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
 
         const data = await res.json();
-        console.log("✅ Dados recebidos:", data);
-
+        
         if (data.articles && Array.isArray(data.articles)) {
-          // Garante que temos artigos suficientes (pelo menos 11 para cobrir até o índice 10 e o grupo 4)
-          setArticles(data.articles.slice(0, 15));
+          const validArticles = data.articles.slice(0, 15);
+
+          // MODIFICAÇÃO INÍCIO: Armazena os dados no cache após a chamada em desenvolvimento
+          if (process.env.NODE_ENV === "development") {
+             const cacheKey = "newsData_aside";
+             console.log("📡 [NewsAside] Buscando da API e salvando no cache (sessionStorage).");
+             sessionStorage.setItem(cacheKey, JSON.stringify(validArticles));
+          }
+          // MODIFICAÇÃO FIM
+
+          setArticles(validArticles);
         } else {
           throw new Error("Resposta inesperada da API");
         }
       } catch (err) {
         console.error("❌ Erro ao buscar notícias:", err);
-        setError("Erro ao buscar notícias."); // Mensagem de erro simplificada
+        setError("Erro ao buscar notícias.");
       }
     };
 
@@ -209,14 +128,11 @@ export default function NewsAside() {
   // Lógica para determinar cards por página e calcular o offset de slide
   useEffect(() => {
     const handleResize = () => {
-      // ESTA É A ÚNICA LINHA MODIFICADA para o carrossel.
-      // Agora, effectiveCardsPerPage sempre será '2', independentemente do tamanho da tela.
       setEffectiveCardsPerPage(baseCardsPerPage);
 
       const timeoutId = setTimeout(() => {
         if (carouselViewportRef.current) {
           const viewportWidth = carouselViewportRef.current.offsetWidth;
-          // Recalcula o offset de slide para manter a página atual visível
           setTranslateXOffset(-currentPage * viewportWidth);
         }
       }, 50);
@@ -224,10 +140,10 @@ export default function NewsAside() {
       return () => clearTimeout(timeoutId);
     };
 
-    handleResize(); // Executa na montagem inicial e para definir o offset
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [currentPage, effectiveCardsPerPage, carouselArticles.length]); // Adiciona carouselArticles.length para robustez
+  }, [currentPage, effectiveCardsPerPage, carouselArticles.length]);
 
   // Funções para navegar no carrossel
   const handlePrevPage = () => {
@@ -259,7 +175,6 @@ export default function NewsAside() {
 
       {/* GRUPO 2: CARROSSEL (Artigos 2, 3, 4, 5 - Índices 1 a 4) */}
       {carouselArticles.length > 0 && (
-        // O container do carrossel também herda o estilo base para ter a borda superior e padding
         <section className={`${styles.carouselContainer} ${styles.newsCardBase}`}>
           <section ref={carouselViewportRef} className={styles.carouselViewport}>
             <section
@@ -267,7 +182,7 @@ export default function NewsAside() {
               style={{ transform: `translateX(${translateXOffset}px)` }}
             >
               {carouselArticles.map((article, indexInCarousel) => {
-                const originalIndex = 1 + indexInCarousel; // Mapeia para o índice original no array 'articles'
+                const originalIndex = 1 + indexInCarousel;
                 const cardWidthStyle = effectiveCardsPerPage === 1 ?
                   { flexBasis: '100%', maxWidth: '100%' } :
                   { flexBasis: `calc(100% / ${effectiveCardsPerPage} - 10px)`, maxWidth: `calc(100% / ${effectiveCardsPerPage} - 10px)` };
@@ -282,8 +197,8 @@ export default function NewsAside() {
                     titleClass={styles.newsTitleCarousel}
                     authorClass={styles.newsAuthorCarousel}
                     timePublishedClass={styles.newsTimePublishedCarousel}
-                    showDescription={false} // Carrossel não mostra descrição
-                    style={cardWidthStyle} // Aplica estilo inline para largura dinâmica
+                    showDescription={false}
+                    style={cardWidthStyle}
                   />
                 );
               })}
@@ -313,21 +228,21 @@ export default function NewsAside() {
 
       {/* GRUPO 3: ARTIGOS 7, 8, 9, 10 (Índices 6 a 9) */}
       {articles.length > 9 && (
-        <section className={styles.lastFourArticlesGroup}> {/* NOVO CONTAINER AQUI */}
+        <section className={styles.lastFourArticlesGroup}>
           {Array.from({ length: 4 }).map((_, i) => {
-            const articleIndex = 6 + i; // Começa no índice 6
+            const articleIndex = 6 + i;
             const article = articles[articleIndex];
-            if (!article) return null; // Prevenção caso o array seja menor que o esperado
+            if (!article) return null;
             return (
               <ArticleCard
                 key={articleIndex}
                 article={article}
                 index={articleIndex}
                 layoutClasses={[styles.lastFourArticleLayout]}
-                cardBodyClasses={[styles.cardBodyRowReverse]} // Aplica o flex-direction: row-reverse
+                cardBodyClasses={[styles.cardBodyRowReverse]}
                 imageClass={styles.newsImgSmall}
                 titleClass={styles.newsTitleLastFour}
-                showDescription={false} // Não mostra descrição para estes artigos
+                showDescription={false}
               />
             );
           })}
@@ -344,7 +259,7 @@ export default function NewsAside() {
             index={originalIndex}
             layoutClasses={[styles.defaultArticleLayout]}
             imageClass={styles.newsImgDefault}
-            showDescription={true} // Artigos padrão mostram descrição
+            showDescription={true}
           />
         );
       })}
