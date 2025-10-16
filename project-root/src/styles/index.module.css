@@ -6,21 +6,21 @@
 .mainContent {
     display: flex;
     font-family: "Ubuntu Mono", monospace;
-    margin: 1.5rem 0;
+    margin: 1.5rem 0 0 0;
 }
 
 .mainNews {
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 0 1rem 0 0; /* Padding padrão com aside */
-    border-right: 1px solid #ddd; /* Borda padrão com aside */
+    padding: 0 1rem 0 0; 
+    border-right: 1px solid #ddd; 
 }
 
-/* Nova classe para quando o aside não estiver presente */
+/* classe para quando o aside não estiver presente */
 .mainNewsNoAside {
-    padding-right: 0; /* Remove o padding da direita */
-    border-right: none; /* Remove a borda da direita */
+    padding-right: 0; 
+    border-right: none; 
 }
 
 
@@ -75,9 +75,6 @@
         border-right: none;
         padding: 0;
     }
-    /* A classe .mainNewsNoAside não é mais estritamente necessária aqui,
-       pois o media query já remove o padding e a borda.
-       Mas mantê-la não causa problemas e cobre o caso antes do breakpoint. */
     .asideWrap {
         width: 100%;
         border-left: none;

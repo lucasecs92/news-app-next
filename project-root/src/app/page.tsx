@@ -1,4 +1,3 @@
-// page.tsx
 "use client";
 
 import styles from "../styles/index.module.css";

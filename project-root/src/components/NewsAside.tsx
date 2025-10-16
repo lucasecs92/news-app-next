@@ -15,7 +15,7 @@ interface Article {
 }
 
 // Componente auxiliar para renderizar um card de artigo com estilos flexíveis
-// Nenhuma alteração necessária neste componente auxiliar
+
 const ArticleCard = ({
   article,
   index,

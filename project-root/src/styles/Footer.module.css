@@ -4,8 +4,6 @@
     justify-content: space-between;
     padding: 3rem 0;
     font-family: "Ubuntu Mono", monospace;
-    /* A borda pode ser adicionada no componente pai se preferir, 
-       mas manter aqui é bom para encapsulamento */
     border-top: 1px solid #ddd; 
 }
 

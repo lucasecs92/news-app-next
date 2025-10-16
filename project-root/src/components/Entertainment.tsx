@@ -1,4 +1,3 @@
-// Entertainment.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -23,7 +22,7 @@ const Entertainment: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        // MODIFICAÇÃO INÍCIO: Lógica para evitar consumo de API em desenvolvimento
+        // Lógica para evitar consumo de API em desenvolvimento
         if (process.env.NODE_ENV === "development") {
           const cacheKey = "newsData_entertainment";
           const cachedNews = sessionStorage.getItem(cacheKey);
@@ -35,7 +34,6 @@ const Entertainment: React.FC = () => {
             return; // Interrompe a execução
           }
         }
-        // FIM DA MODIFICAÇÃO
 
         const response = await fetch(
           `${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_ENTERTAINMENT}`
@@ -51,13 +49,12 @@ const Entertainment: React.FC = () => {
             article.title !== "[Removed]" && article.description !== null
         );
         
-        // MODIFICAÇÃO INÍCIO: Armazena os dados no cache
+        // Armazena os dados no cache
         if (process.env.NODE_ENV === "development") {
           const cacheKey = "newsData_entertainment";
           console.log("📡 [Entertainment] Buscando da API e salvando no cache (sessionStorage).");
           sessionStorage.setItem(cacheKey, JSON.stringify(filteredArticles));
         }
-        // FIM DA MODIFICAÇÃO
 
         setArticles(filteredArticles);
       } catch (err) {

@@ -1,4 +1,3 @@
-// components/Science.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -28,7 +27,7 @@ const Science: React.FC = () => {
           const cachedNews = sessionStorage.getItem(cacheKey);
 
           if (cachedNews) {
-            console.log("🗂️ [Science] Usando dados do cache (sessionStorage).");
+            console.log("[Science] Usando dados do cache (sessionStorage).");
             setArticles(JSON.parse(cachedNews));
             setLoading(false);
             return;

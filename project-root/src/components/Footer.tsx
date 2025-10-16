@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <section className={styles.footerContainer}>
       <p>
-        <span>&copy;</span> 2024 - News App
+        <span>&copy;</span> 2025 - News App
       </p>
       <nav className={styles.footerNav}>
         <ul>

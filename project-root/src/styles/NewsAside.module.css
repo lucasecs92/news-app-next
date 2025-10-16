@@ -359,7 +359,7 @@
     padding: 0.8rem 0;
   }
 
-  /* NOVO: Esconde a barra vertical quando o layout é de uma coluna */
+  /* Esconde a barra vertical quando o layout é de uma coluna */
   .lastFourArticlesGroup > .lastFourArticleLayout:nth-child(2n - 1)::after {
     content: none;
   }

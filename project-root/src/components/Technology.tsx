@@ -1,4 +1,3 @@
-// components/Technology.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -28,7 +27,7 @@ const Technology: React.FC = () => {
           const cachedNews = sessionStorage.getItem(cacheKey);
 
           if (cachedNews) {
-            console.log("🗂️ [Technology] Usando dados do cache (sessionStorage).");
+            console.log("[Technology] Usando dados do cache (sessionStorage).");
             setArticles(JSON.parse(cachedNews));
             setLoading(false);
             return;

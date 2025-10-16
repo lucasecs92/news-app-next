@@ -1,4 +1,3 @@
-// NavbarMain.tsx
 import React from "react";
 import styles from "../styles/NavbarMain.module.css";
 import Link from "next/link";

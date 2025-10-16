@@ -1,9 +1,7 @@
-// NavbarBottom.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import styles from "../styles/NavbarBottom.module.css";
-// Importar os tipos de categoria do config
 import {
   CATEGORY_ENTERTAINMENT,
   CATEGORY_BUSINESS,
@@ -13,7 +11,6 @@ import {
   CATEGORY_SCIENCE,
 } from "../utils/config";
 
-// Definir as props esperadas por NavbarBottom
 interface NavbarBottomProps {
   setActiveCategory: (category: string) => void;
 }
