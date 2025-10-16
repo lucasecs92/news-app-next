@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image"; 
 import styles from "../styles/MainNews.module.css";
 import { API_URL, API_KEY, COUNTRY, CATEGORY_GENERAL } from "../utils/config";
 import { timeSince, displayError } from "../utils/utils";
@@ -19,15 +20,14 @@ export const MainNews: React.FC = () => {
   useEffect(() => {
     const getNews = async () => {
       try {
-        // Lógica para evitar consumo de API em desenvolvimento
         if (process.env.NODE_ENV === "development") {
           const cacheKey = "newsData_general";
           const cachedNews = sessionStorage.getItem(cacheKey);
 
           if (cachedNews) {
-            console.log("🗂️ [MainNews] Usando dados do cache (sessionStorage).");
+            console.log("[MainNews] Usando dados do cache (sessionStorage).");
             setArticles(JSON.parse(cachedNews));
-            return; // Interrompe a execução para não chamar a API
+            return;
           }
         }
 
@@ -45,7 +45,6 @@ export const MainNews: React.FC = () => {
           (a: Article) => a.title !== "[Removed]" && a.description
         );
 
-        // Armazena os dados no cache após a chamada em desenvolvimento
         if (process.env.NODE_ENV === "development") {
            const cacheKey = "newsData_general";
            console.log("📡 [MainNews] Buscando da API e salvando no cache (sessionStorage).");
@@ -82,7 +81,7 @@ export const MainNews: React.FC = () => {
         >
           <section className={styles.cardBody}>
             {article.image && (
-              <img
+              <Image
                 src={article.image}
                 alt={article.title}
                 title={article.title}
