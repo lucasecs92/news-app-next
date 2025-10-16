@@ -1,3 +1,4 @@
+// page.tsx
 "use client";
 
 import styles from "../styles/index.module.css";
@@ -13,8 +14,8 @@ import Sports from "@/components/Sports";
 import Health from "@/components/Health";
 import Technology from "@/components/Technology";
 import Science from "@/components/Science";
-// Importe o novo componente Footer
-import Footer from "@/components/Footer"; 
+import Footer from "@/components/Footer";
+import { SearchResults } from "@/components/SearchResults";
 import {
   CATEGORY_GENERAL,
   CATEGORY_ENTERTAINMENT,
@@ -27,27 +28,26 @@ import {
 import { useState } from "react";
 
 export default function Home() {
-  const [activeCategory, setActiveCategory] =
-    useState<string>(CATEGORY_GENERAL);
+  const [activeCategory, setActiveCategory] = useState<string>(CATEGORY_GENERAL);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  // FUNÇÃO HANDLER
+  // Esta função gerencia a mudança de categoria e também limpa a busca.
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category); // Define a nova categoria
+    setSearchQuery("");         // Limpa a busca, retornando à visualização principal
+  };
 
   const renderMainContent = () => {
     switch (activeCategory) {
-      case CATEGORY_GENERAL:
-        return <MainNews />;
-      case CATEGORY_ENTERTAINMENT:
-        return <Entertainment />;
-      case CATEGORY_BUSINESS:
-        return <Business />;
-      case CATEGORY_SPORTS:
-        return <Sports />;
-      case CATEGORY_HEALTH:
-        return <Health />;
-      case CATEGORY_TECHNOLOGY:
-        return <Technology />;
-      case CATEGORY_SCIENCE:
-        return <Science />;
-      default:
-        return <MainNews />;
+      case CATEGORY_GENERAL: return <MainNews />;
+      case CATEGORY_ENTERTAINMENT: return <Entertainment />;
+      case CATEGORY_BUSINESS: return <Business />;
+      case CATEGORY_SPORTS: return <Sports />;
+      case CATEGORY_HEALTH: return <Health />;
+      case CATEGORY_TECHNOLOGY: return <Technology />;
+      case CATEGORY_SCIENCE: return <Science />;
+      default: return <MainNews />;
     }
   };
 
@@ -58,25 +58,32 @@ export default function Home() {
   return (
     <section className={styles.container}>
       <header>
-        <NavbarTop />
-        <NavbarMain setActiveCategory={setActiveCategory} />
-        <NavbarBottom setActiveCategory={setActiveCategory} />
+        <NavbarTop onSearch={setSearchQuery} />
+        {/* Passa a nova função handler para as navbars */}
+        <NavbarMain setActiveCategory={handleCategoryChange} />
+        <NavbarBottom setActiveCategory={handleCategoryChange} />
       </header>
-
+      
       <main className={styles.mainContent}>
-        <section className={mainNewsClasses}>
-          {renderMainContent()}
-        </section>
+        {searchQuery ? (
+          <SearchResults
+            query={searchQuery}
+          />
+        ) : (
+          <>
+            <section className={mainNewsClasses}>{renderMainContent()}</section>
 
-        {activeCategory === CATEGORY_GENERAL && (
-          <aside className={styles.asideWrap}>
-            <Weather />
-            <p className={styles.asideMostRead}>Mais Lidas</p>
-            <NewsAside />
-          </aside>
+            {activeCategory === CATEGORY_GENERAL && (
+              <aside className={styles.asideWrap}>
+                <Weather />
+                <p className={styles.asideMostRead}>Mais Lidas</p>
+                <NewsAside />
+              </aside>
+            )}
+          </>
         )}
       </main>
-      
+
       <footer>
         <Footer />
       </footer>
