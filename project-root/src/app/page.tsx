@@ -9,6 +9,12 @@ import { MainNews } from "@/components/MainNews";
 import Weather from "@/components/Weather";
 import NewsAside from "@/components/NewsAside";
 import Entertainment from "@/components/Entertainment";
+// Importar os novos componentes
+import Business from "@/components/Business";
+import Sports from "@/components/Sports";
+import Health from "@/components/Health";
+import Technology from "@/components/Technology";
+import Science from "@/components/Science";
 import {
   CATEGORY_GENERAL,
   CATEGORY_ENTERTAINMENT,
@@ -24,12 +30,23 @@ export default function Home() {
   const [activeCategory, setActiveCategory] =
     useState<string>(CATEGORY_GENERAL);
 
+  // Atualizar a função para incluir os novos casos
   const renderMainContent = () => {
     switch (activeCategory) {
       case CATEGORY_GENERAL:
         return <MainNews />;
       case CATEGORY_ENTERTAINMENT:
         return <Entertainment />;
+      case CATEGORY_BUSINESS:
+        return <Business />;
+      case CATEGORY_SPORTS:
+        return <Sports />;
+      case CATEGORY_HEALTH:
+        return <Health />;
+      case CATEGORY_TECHNOLOGY:
+        return <Technology />;
+      case CATEGORY_SCIENCE:
+        return <Science />;
       default:
         return <MainNews />;
     }
