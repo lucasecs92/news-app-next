@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image"; // Importado
 import { API_URL, API_KEY, COUNTRY, CATEGORY_TECHNOLOGY } from "../utils/config";
 import styles from "../styles/NewsCard.module.css";
 import { timeSince } from "../utils/utils";
@@ -25,7 +26,6 @@ const Technology: React.FC = () => {
         if (process.env.NODE_ENV === "development") {
           const cacheKey = "newsData_technology";
           const cachedNews = sessionStorage.getItem(cacheKey);
-
           if (cachedNews) {
             console.log("[Technology] Usando dados do cache (sessionStorage).");
             setArticles(JSON.parse(cachedNews));
@@ -33,69 +33,43 @@ const Technology: React.FC = () => {
             return;
           }
         }
-
-        const response = await fetch(
-          `${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_TECHNOLOGY}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`Erro HTTP! status: ${response.status}`);
-        }
-
+        const response = await fetch(`${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_TECHNOLOGY}`);
+        if (!response.ok) throw new Error(`Erro HTTP! status: ${response.status}`);
         const data = await response.json();
-        const filteredArticles = data.articles.filter(
-          (article: Article) =>
-            article.title !== "[Removed]" && article.description !== null
-        );
-        
+        const filteredArticles = data.articles.filter((article: Article) => article.title !== "[Removed]" && article.description !== null);
         if (process.env.NODE_ENV === "development") {
           const cacheKey = "newsData_technology";
           console.log("📡 [Technology] Buscando da API e salvando no cache (sessionStorage).");
           sessionStorage.setItem(cacheKey, JSON.stringify(filteredArticles));
         }
-
         setArticles(filteredArticles);
       } catch (err) {
         console.error("Erro ao buscar notícias de tecnologia: ", err);
-        setError(
-          "Não foi possível carregar as notícias de Tecnologia. Tente novamente mais tarde."
-        );
+        setError("Não foi possível carregar as notícias de Tecnologia.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchTechnologyNews();
   }, []);
 
-  if (loading) {
-    return <p className={styles.loadingMessage}>Carregando notícias de Tecnologia...</p>;
-  }
-
-  if (error) {
-    return <p className={styles.errorMessage}>{error}</p>;
-  }
+  if (loading) return <p className={styles.loadingMessage}>Carregando notícias de Tecnologia...</p>;
+  if (error) return <p className={styles.errorMessage}>{error}</p>;
 
   return (
     <section id="technology-content">
       <h2 className={styles.newsCardTitle}>Tecnologia</h2>
-      {articles.length === 0 && !loading && !error ? (
-        <p>Nenhuma notícia de Tecnologia encontrada.</p>
-      ) : (
+      {articles.length > 0 ? (
         articles.map((article, index) => (
           <section key={index} className={styles.newsCard}>
             <section className={styles.cardBody}>
-              <img
+              <Image
                 src={article.image || "https://via.placeholder.com/150"}
                 className={styles.newsImg}
                 alt={article.title}
                 title={article.title}
-                onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    if (target.src !== "https://via.placeholder.com/150") {
-                        target.src = "https://via.placeholder.com/150";
-                    }
-                }}
+                width={150}
+                height={100}
               />
               <section className={styles.newsText}>
                 <h2 className={styles.navNewsTitle}>{article.title}</h2>
@@ -107,6 +81,8 @@ const Technology: React.FC = () => {
             </section>
           </section>
         ))
+      ) : (
+        <p>Nenhuma notícia de Tecnologia encontrada.</p>
       )}
     </section>
   );

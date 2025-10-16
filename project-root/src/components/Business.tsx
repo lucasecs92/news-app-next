@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image"; // Importado
 import { API_URL, API_KEY, COUNTRY, CATEGORY_BUSINESS } from "../utils/config";
 import styles from "../styles/NewsCard.module.css";
 import { timeSince } from "../utils/utils";
@@ -25,77 +26,50 @@ const Business: React.FC = () => {
         if (process.env.NODE_ENV === "development") {
           const cacheKey = "newsData_business";
           const cachedNews = sessionStorage.getItem(cacheKey);
-
           if (cachedNews) {
-            console.log("🗂️ [Business] Usando dados do cache (sessionStorage).");
+            console.log("[Business] Usando dados do cache (sessionStorage).");
             setArticles(JSON.parse(cachedNews));
             setLoading(false);
             return;
           }
         }
-
-        const response = await fetch(
-          `${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_BUSINESS}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`Erro HTTP! status: ${response.status}`);
-        }
-
+        const response = await fetch(`${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_BUSINESS}`);
+        if (!response.ok) throw new Error(`Erro HTTP! status: ${response.status}`);
         const data = await response.json();
-        const filteredArticles = data.articles.filter(
-          (article: Article) =>
-            article.title !== "[Removed]" && article.description !== null
-        );
-        
+        const filteredArticles = data.articles.filter((article: Article) => article.title !== "[Removed]" && article.description !== null);
         if (process.env.NODE_ENV === "development") {
           const cacheKey = "newsData_business";
           console.log("📡 [Business] Buscando da API e salvando no cache (sessionStorage).");
           sessionStorage.setItem(cacheKey, JSON.stringify(filteredArticles));
         }
-
         setArticles(filteredArticles);
       } catch (err) {
         console.error("Erro ao buscar notícias de negócios: ", err);
-        setError(
-          "Não foi possível carregar as notícias de Negócios. Tente novamente mais tarde."
-        );
+        setError("Não foi possível carregar as notícias de Negócios.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchBusinessNews();
   }, []);
 
-  if (loading) {
-    return <p className={styles.loadingMessage}>Carregando notícias de Negócios...</p>;
-  }
-
-  if (error) {
-    return <p className={styles.errorMessage}>{error}</p>;
-  }
+  if (loading) return <p className={styles.loadingMessage}>Carregando notícias de Negócios...</p>;
+  if (error) return <p className={styles.errorMessage}>{error}</p>;
 
   return (
     <section id="business-content">
       <h2 className={styles.newsCardTitle}>Negócios</h2>
-      {articles.length === 0 && !loading && !error ? (
-        <p>Nenhuma notícia de Negócios encontrada.</p>
-      ) : (
+      {articles.length > 0 ? (
         articles.map((article, index) => (
           <section key={index} className={styles.newsCard}>
             <section className={styles.cardBody}>
-              <img
+              <Image
                 src={article.image || "https://via.placeholder.com/150"}
                 className={styles.newsImg}
                 alt={article.title}
                 title={article.title}
-                onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    if (target.src !== "https://via.placeholder.com/150") {
-                        target.src = "https://via.placeholder.com/150";
-                    }
-                }}
+                width={150}
+                height={100}
               />
               <section className={styles.newsText}>
                 <h2 className={styles.navNewsTitle}>{article.title}</h2>
@@ -107,6 +81,8 @@ const Business: React.FC = () => {
             </section>
           </section>
         ))
+      ) : (
+        <p>Nenhuma notícia de Negócios encontrada.</p>
       )}
     </section>
   );

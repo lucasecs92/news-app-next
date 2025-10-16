@@ -28,10 +28,6 @@
     font-weight: bold;
 }
 
-.previsaoTempWrap img {
-    width: 2em;
-}
-
 .previsaoHumidity {
     display: flex;
     align-items: center;

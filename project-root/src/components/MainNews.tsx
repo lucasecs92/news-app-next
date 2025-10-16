@@ -86,6 +86,9 @@ export const MainNews: React.FC = () => {
                 alt={article.title}
                 title={article.title}
                 className={styles.mainNewsImg}
+                width={500} // Valor de exemplo, ajuste conforme seu design
+                height={300} // Valor de exemplo, ajuste conforme seu design
+                priority={index < 3} // Opcional: Carrega as 3 primeiras imagens com prioridade
               />
             )}
             <section className={styles.mainNewsText}>

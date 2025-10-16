@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image"; 
 import { API_URL, API_KEY, COUNTRY, CATEGORY_SPORTS } from "../utils/config";
 import styles from "../styles/NewsCard.module.css";
 import { timeSince } from "../utils/utils";
@@ -25,7 +26,6 @@ const Sports: React.FC = () => {
         if (process.env.NODE_ENV === "development") {
           const cacheKey = "newsData_sports";
           const cachedNews = sessionStorage.getItem(cacheKey);
-
           if (cachedNews) {
             console.log("[Sports] Usando dados do cache (sessionStorage).");
             setArticles(JSON.parse(cachedNews));
@@ -33,69 +33,43 @@ const Sports: React.FC = () => {
             return;
           }
         }
-
-        const response = await fetch(
-          `${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_SPORTS}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`Erro HTTP! status: ${response.status}`);
-        }
-
+        const response = await fetch(`${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_SPORTS}`);
+        if (!response.ok) throw new Error(`Erro HTTP! status: ${response.status}`);
         const data = await response.json();
-        const filteredArticles = data.articles.filter(
-          (article: Article) =>
-            article.title !== "[Removed]" && article.description !== null
-        );
-        
+        const filteredArticles = data.articles.filter((article: Article) => article.title !== "[Removed]" && article.description !== null);
         if (process.env.NODE_ENV === "development") {
           const cacheKey = "newsData_sports";
           console.log("📡 [Sports] Buscando da API e salvando no cache (sessionStorage).");
           sessionStorage.setItem(cacheKey, JSON.stringify(filteredArticles));
         }
-
         setArticles(filteredArticles);
       } catch (err) {
         console.error("Erro ao buscar notícias de esportes: ", err);
-        setError(
-          "Não foi possível carregar as notícias de Esportes. Tente novamente mais tarde."
-        );
+        setError("Não foi possível carregar as notícias de Esportes.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchSportsNews();
   }, []);
 
-  if (loading) {
-    return <p className={styles.loadingMessage}>Carregando notícias de Esportes...</p>;
-  }
-
-  if (error) {
-    return <p className={styles.errorMessage}>{error}</p>;
-  }
+  if (loading) return <p className={styles.loadingMessage}>Carregando notícias de Esportes...</p>;
+  if (error) return <p className={styles.errorMessage}>{error}</p>;
 
   return (
     <section id="sports-content">
       <h2 className={styles.newsCardTitle}>Esportes</h2>
-      {articles.length === 0 && !loading && !error ? (
-        <p>Nenhuma notícia de Esportes encontrada.</p>
-      ) : (
+      {articles.length > 0 ? (
         articles.map((article, index) => (
           <section key={index} className={styles.newsCard}>
             <section className={styles.cardBody}>
-              <img
+              <Image
                 src={article.image || "https://via.placeholder.com/150"}
                 className={styles.newsImg}
                 alt={article.title}
                 title={article.title}
-                onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    if (target.src !== "https://via.placeholder.com/150") {
-                        target.src = "https://via.placeholder.com/150";
-                    }
-                }}
+                width={150}
+                height={100}
               />
               <section className={styles.newsText}>
                 <h2 className={styles.navNewsTitle}>{article.title}</h2>
@@ -107,6 +81,8 @@ const Sports: React.FC = () => {
             </section>
           </section>
         ))
+      ) : (
+        <p>Nenhuma notícia de Esportes encontrada.</p>
       )}
     </section>
   );
