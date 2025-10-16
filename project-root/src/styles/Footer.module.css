@@ -1,0 +1,51 @@
+.footerContainer {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 3rem 0;
+    font-family: "Ubuntu Mono", monospace;
+    /* A borda pode ser adicionada no componente pai se preferir, 
+       mas manter aqui é bom para encapsulamento */
+    border-top: 1px solid #ddd; 
+}
+
+.footerContainer p, 
+.footerContainer a {
+    font-size: 1.2rem;
+    color: black;
+}
+
+.footerContainer span {
+    font-size: 1.7rem;
+}
+
+.footerNav ul {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.footerNav ul li a {
+    text-decoration: none;
+}
+
+@media screen and (max-width: 1070px) {
+    .footerContainer p, 
+    .footerContainer a {
+        font-size: 1rem;
+    }
+    .footerContainer span {
+        font-size: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 750px) {
+    .footerContainer {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    .footerContainer a {
+        font-size: 0.8rem;
+    }
+}
