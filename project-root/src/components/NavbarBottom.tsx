@@ -18,6 +18,7 @@ interface NavbarBottomProps {
 const NavbarBottom: React.FC<NavbarBottomProps> = ({ setActiveCategory }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isFixed, setIsFixed] = useState(false);
+  const [isWideScreen, setIsWideScreen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
@@ -28,28 +29,39 @@ const NavbarBottom: React.FC<NavbarBottomProps> = ({ setActiveCategory }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 870) setIsMenuOpen(true);
-      else setIsMenuOpen(false);
+      // Atualiza o estado que controla se a tela é larga
+      setIsWideScreen(window.innerWidth >= 870);
+
+      // Mantém a lógica de abrir/fechar o menu em telas maiores
+      if (window.innerWidth >= 870) {
+        setIsMenuOpen(true);
+      } else {
+        setIsMenuOpen(false);
+      }
     };
 
     const handleScroll = () => {
       const navbarMain = document.querySelector("#navbar-main");
       if (navbarMain) {
+        // O acesso ao 'window' aqui é seguro pois useEffect só roda no cliente
         setIsFixed(window.scrollY >= navbarMain.clientHeight);
       }
     };
 
+    // Adiciona os event listeners
     window.addEventListener("resize", handleResize);
     window.addEventListener("scroll", handleScroll);
 
+    // Roda as funções uma vez no início para definir os estados iniciais
     handleResize();
     handleScroll();
 
+    // Função de limpeza para remover os listeners quando o componente for desmontado
     return () => {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, []); // O array vazio [] garante que este efeito rode apenas uma vez, na montagem do componente no cliente
 
   return (
     <section
@@ -64,14 +76,6 @@ const NavbarBottom: React.FC<NavbarBottomProps> = ({ setActiveCategory }) => {
             height="1em"
             viewBox="0 0 24 24"
           >
-            <path
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
           </svg>
         ) : (
           <svg
@@ -80,13 +84,6 @@ const NavbarBottom: React.FC<NavbarBottomProps> = ({ setActiveCategory }) => {
             height="1em"
             viewBox="0 0 24 24"
           >
-            <path
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeWidth="2"
-              d="M5 7h14M5 12h14M5 17h14"
-            />
           </svg>
         )}
       </menu>
@@ -94,7 +91,7 @@ const NavbarBottom: React.FC<NavbarBottomProps> = ({ setActiveCategory }) => {
       <ul
         className={styles.ulList}
         style={{
-          display: isMenuOpen || window.innerWidth >= 870 ? "flex" : "none",
+          display: isMenuOpen || isWideScreen ? "flex" : "none",
         }}
       >
         {[
