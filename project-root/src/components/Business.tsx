@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image"; // Importado
+import Image from "next/image"; 
 import { API_URL, API_KEY, COUNTRY, CATEGORY_BUSINESS } from "../utils/config";
 import styles from "../styles/NewsCard.module.css";
 import { timeSince } from "../utils/utils";

@@ -58,7 +58,6 @@ export default function Home() {
     <section className={styles.container}>
       <header>
         <NavbarTop onSearch={setSearchQuery} />
-        {/* Passa a nova função handler para as navbars */}
         <NavbarMain setActiveCategory={handleCategoryChange} />
         <NavbarBottom setActiveCategory={handleCategoryChange} />
       </header>

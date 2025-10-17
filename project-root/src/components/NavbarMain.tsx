@@ -8,7 +8,7 @@ interface NavbarMainProps {
 }
 
 export const NavbarMain: React.FC<NavbarMainProps> = ({ setActiveCategory }) => {
-  const handleTitleClick = (e: React.MouseEvent<HTMLHeadingElement>) => {
+  const handleTitleClick = () => {
     setActiveCategory(CATEGORY_GENERAL);
   };
 
