@@ -88,8 +88,8 @@ const Health: React.FC = () => {
                 className={styles.newsImg}
                 alt={article.title}
                 title={article.title}
-                width={150}
-                height={100}
+                width={300}
+                height={300}
               />
               <section className={styles.newsText}>
                 <h2 className={styles.navNewsTitle}>{article.title}</h2>
