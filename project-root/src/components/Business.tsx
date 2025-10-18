@@ -1,12 +1,10 @@
-// Business.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-// Importe NEWS_API_PROXY_URL e COUNTRY. API_URL e API_KEY não são mais necessários no cliente.
 import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_BUSINESS } from "../utils/config";
 import styles from "../styles/NewsCard.module.css";
-import { timeSince, displayError } from "../utils/utils"; // Importe displayError
+import { timeSince, displayError } from "../utils/utils"; 
 
 interface Article {
   title: string;
@@ -34,7 +32,7 @@ const Business: React.FC = () => {
         if (process.env.NODE_ENV === "development") {
           const cachedNews = sessionStorage.getItem(cacheKey);
           if (cachedNews) {
-            console.log(`🗂️ [${CATEGORY_BUSINESS}] Usando dados do cache (sessionStorage).`);
+            console.log(`[${CATEGORY_BUSINESS}] Usando dados do cache (sessionStorage).`);
             if (!ignore) {
               setArticles(JSON.parse(cachedNews));
               setLoading(false);
@@ -43,7 +41,7 @@ const Business: React.FC = () => {
           }
         }
 
-        // Alteração aqui: Chame seu API Route
+        // Chame seu API Route
         const response = await fetch(
           `${NEWS_API_PROXY_URL}/${CATEGORY_BUSINESS}?country=${COUNTRY}`
         );
@@ -70,7 +68,7 @@ const Business: React.FC = () => {
 
           // Lógica de cache em desenvolvimento (salvando após buscar do proxy)
           if (process.env.NODE_ENV === "development") {
-            console.log(`📡 [${CATEGORY_BUSINESS}] Buscando do Proxy e salvando no cache (sessionStorage).`);
+            console.log(`[${CATEGORY_BUSINESS}] Buscando do Proxy e salvando no cache (sessionStorage).`);
             sessionStorage.setItem(cacheKey, JSON.stringify(filteredArticles));
           }
           setArticles(filteredArticles);
@@ -107,24 +105,22 @@ const Business: React.FC = () => {
       <h2 className={styles.newsCardTitle}>Negócios</h2>
       {articles.length > 0 ? (
         articles.map((article, index) => (
-          // Alteração aqui: Envolver o cartão em um link
+          // Envolver o cartão em um link
           <a
             key={index}
             href={article.url || "#"} // Link para o URL do artigo, ou '#' como fallback
-            target="_blank"           // Abre em uma nova aba
-            rel="noopener noreferrer" // Medida de segurança para links externos
-            className={styles.newsCard} // Aplica o estilo do cartão ao link
+            target="_blank"           
+            rel="noopener noreferrer" 
+            className={styles.newsCard} 
           >
             <section className={styles.cardBody}>
               <Image
-                src={article.image} // Não precisa de fallback aqui se já filtramos por `article.image`
+                src={article.image} 
                 className={styles.newsImg}
                 alt={article.title}
                 title={article.title}
                 width={300}
                 height={300}
-                // Remover 'unoptimized' a menos que seja estritamente necessário
-                // unoptimized={true} // <-- REMOVER ISSO
                 onError={(e) => {
                   // Fallback para imagem local caso a URL da imagem falhe ao carregar
                   (e.target as HTMLImageElement).src = '/default-news-image.jpg';
@@ -142,7 +138,7 @@ const Business: React.FC = () => {
           </a>
         ))
       ) : (
-        <p className={styles.noResultsMessage}>Nenhuma notícia de Negócios encontrada.</p> // Mensagem aprimorada
+        <p className={styles.noResultsMessage}>Nenhuma notícia de Negócios encontrada.</p> 
       )}
     </section>
   );

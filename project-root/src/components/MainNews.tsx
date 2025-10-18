@@ -1,10 +1,9 @@
-// MainNews.tsx (Exemplo)
 "use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "../styles/MainNews.module.css";
-import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_GENERAL } from "../utils/config"; // Importe NEWS_API_PROXY_URL
+import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_GENERAL } from "../utils/config"; 
 import { timeSince, displayError } from "../utils/utils";
 
 export interface Article {
@@ -26,10 +25,6 @@ export const MainNews: React.FC = () => {
       try {
         const cacheKey = `newsData_${CATEGORY_GENERAL}`;
 
-        // No ambiente de produção, você pode considerar ter seu API Route
-        // também gerenciando um cache mais sofisticado, mas para o cliente,
-        // o sessionStorage ainda pode ser útil para reduzir chamadas ao proxy.
-        // No entanto, é importante que o cache seja invalidado ou atualizado.
         if (process.env.NODE_ENV === "development") {
           const cachedNews = sessionStorage.getItem(cacheKey);
           if (cachedNews) {
@@ -40,7 +35,7 @@ export const MainNews: React.FC = () => {
           }
         }
 
-        // ALTERAÇÃO AQUI: Chame seu API Route
+        // Chame o API Route
         const response = await fetch(
           `${NEWS_API_PROXY_URL}/${CATEGORY_GENERAL}?country=${COUNTRY}`
         );

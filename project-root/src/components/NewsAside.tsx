@@ -1,14 +1,12 @@
-// NewsAside.tsx (Exemplo)
 "use client";
 
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import styles from "../styles/NewsAside.module.css";
-import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_ENTERTAINMENT } from "../utils/config"; // Importe NEWS_API_PROXY_URL
+import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_ENTERTAINMENT } from "../utils/config"; 
 import { timeSince } from "../utils/utils";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 
-// ... (interface Article e ArticleCard permanecem as mesmas)
 interface Article {
   title: string;
   description: string | null;
@@ -107,7 +105,7 @@ export default function NewsAside() {
           }
         }
 
-        // ALTERAÇÃO AQUI: Chame seu API Route
+        // Chame o API Route
         const res = await fetch(`${NEWS_API_PROXY_URL}/${CATEGORY_ENTERTAINMENT}?country=${COUNTRY}`);
 
         if (!res.ok) {

@@ -1,23 +1,19 @@
-// src/app/api/news/[category]/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 
 const GNEWS_API_KEY = process.env.GNEWS_API_KEY;
 const GNEWS_API_BASE_URL = "https://gnews.io/api/v4/top-headlines";
-const DEFAULT_COUNTRY = "us"; // Ou 'br' se preferir para o Brasil
+const DEFAULT_COUNTRY = "us"; 
 
 export async function GET(
   request: NextRequest,
-  // MODIFICAÇÃO CHAVE: Tipar 'params' como uma Promise
-  context: { params: Promise<{ category: string }> } // A tipagem esperada é Promise<{ category: string }>
+  context: { params: Promise<{ category: string }> }
 ) {
-  // Agora, você precisa aguardar a resolução de context.params
   const resolvedParams = await context.params;
-  const { category } = resolvedParams; // Desestruture de resolvedParams
+  const { category } = resolvedParams;
 
   const searchParams = request.nextUrl.searchParams;
   const country = searchParams.get('country') || DEFAULT_COUNTRY;
-  const query = searchParams.get('q'); // Para pesquisa (se você tiver)
+  const query = searchParams.get('q'); // Este é o parâmetro de busca que virá do SearchResults
 
   if (!GNEWS_API_KEY) {
     return NextResponse.json(
@@ -27,14 +23,12 @@ export async function GET(
   }
 
   try {
+    // Construa a URL base com token, país e categoria
     let url = `${GNEWS_API_BASE_URL}?token=${GNEWS_API_KEY}&country=${country}&topic=${category}`;
+    
+    // Se houver uma query de busca (do SearchResults), adicione-a à URL
     if (query) {
-      // Se 'q' for fornecido, a GNews API geralmente prioriza a pesquisa por query
-      // e ignora o 'topic'. Verifique a documentação da GNews para o comportamento exato.
-      // Além disso, a GNews API espera 'q' para pesquisa e 'topic' para categorias.
-      // Você deve decidir qual usar. Se 'q' estiver presente, geralmente é uma pesquisa.
-      // Se não, é uma busca por categoria.
-      url = `${GNEWS_API_BASE_URL}?token=${GNEWS_API_KEY}&q=${encodeURIComponent(query)}&country=${country}`;
+      url += `&q=${encodeURIComponent(query)}`; // Adiciona a query usando '&q='
     }
 
     const response = await fetch(url);

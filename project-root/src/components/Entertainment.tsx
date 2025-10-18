@@ -1,9 +1,8 @@
-// Entertainment.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_ENTERTAINMENT } from "../utils/config"; // <- Categoria correta
+import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_ENTERTAINMENT } from "../utils/config"; 
 import styles from "../styles/NewsCard.module.css";
 import { timeSince, displayError } from "../utils/utils";
 
@@ -12,7 +11,7 @@ interface Article {
   description: string | null;
   image: string;
   publishedAt: string;
-  url?: string; // Adicionado
+  url?: string; 
 }
 
 const Entertainment: React.FC = () => {
@@ -27,12 +26,11 @@ const Entertainment: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const cacheKey = `newsData_${CATEGORY_ENTERTAINMENT}`; // <- Chave de cache correta
-
+        const cacheKey = `newsData_${CATEGORY_ENTERTAINMENT}`; 
         if (process.env.NODE_ENV === "development") {
           const cachedNews = sessionStorage.getItem(cacheKey);
           if (cachedNews) {
-            console.log(`🗂️ [${CATEGORY_ENTERTAINMENT}] Usando dados do cache (sessionStorage).`);
+            console.log(`[${CATEGORY_ENTERTAINMENT}] Usando dados do cache (sessionStorage).`);
             if (!ignore) {
               setArticles(JSON.parse(cachedNews));
               setLoading(false);
@@ -42,7 +40,7 @@ const Entertainment: React.FC = () => {
         }
 
         const response = await fetch(
-          `${NEWS_API_PROXY_URL}/${CATEGORY_ENTERTAINMENT}?country=${COUNTRY}` // <- URL correta
+          `${NEWS_API_PROXY_URL}/${CATEGORY_ENTERTAINMENT}?country=${COUNTRY}` 
         );
 
         if (!response.ok) {
@@ -65,7 +63,7 @@ const Entertainment: React.FC = () => {
           );
 
           if (process.env.NODE_ENV === "development") {
-            console.log(`📡 [${CATEGORY_ENTERTAINMENT}] Buscando do Proxy e salvando no cache (sessionStorage).`);
+            console.log(`[${CATEGORY_ENTERTAINMENT}] Buscando do Proxy e salvando no cache (sessionStorage).`);
             sessionStorage.setItem(cacheKey, JSON.stringify(filteredArticles));
           }
           setArticles(filteredArticles);
@@ -94,11 +92,11 @@ const Entertainment: React.FC = () => {
     };
   }, []);
 
-  if (loading) return <p className={styles.loadingMessage}>Carregando notícias de Entretenimento...</p>; // <- Mensagem correta
+  if (loading) return <p className={styles.loadingMessage}>Carregando notícias de Entretenimento...</p>; 
   if (error) return <p className={styles.errorMessage}>{error}</p>;
 
   return (
-    <section id="entertainment-content"> {/* <- ID correto */}
+    <section id="entertainment-content"> 
       <h2 className={styles.newsCardTitle}>Entretenimento</h2> {/* <- Título correto */}
       {articles.length > 0 ? (
         articles.map((article, index) => (

@@ -9,15 +9,16 @@
   flex-direction: row-reverse;
   justify-content: space-between;
   gap: 3rem;
-  padding: 1rem 0;
+  padding: 3rem 0;
+  border-top: 1px solid #343434;
 }
 .newsImg {
   width: 40%;
 }
 
 .newsCard {
-  border-top: 1px solid #343434;
   padding: 1rem 0;
+  text-decoration: none;
 }
 
 .navNewsTitle {

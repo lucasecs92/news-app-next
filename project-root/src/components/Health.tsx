@@ -1,18 +1,17 @@
-// Health.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_HEALTH } from "../utils/config";
 import styles from "../styles/NewsCard.module.css";
-import { timeSince, displayError } from "../utils/utils"; // Importe displayError
+import { timeSince, displayError } from "../utils/utils"; 
 
 interface Article {
   title: string;
   description: string | null;
   image: string;
   publishedAt: string;
-  url?: string; // Adicionado: URL para o artigo original
+  url?: string; // URL para o artigo original
 }
 
 const Health: React.FC = () => {
@@ -33,7 +32,7 @@ const Health: React.FC = () => {
         if (process.env.NODE_ENV === "development") {
           const cachedNews = sessionStorage.getItem(cacheKey);
           if (cachedNews) {
-            console.log(`🗂️ [${CATEGORY_HEALTH}] Usando dados do cache (sessionStorage).`);
+            console.log(`[${CATEGORY_HEALTH}] Usando dados do cache (sessionStorage).`);
             if (!ignore) {
               setArticles(JSON.parse(cachedNews));
               setLoading(false);
@@ -42,7 +41,7 @@ const Health: React.FC = () => {
           }
         }
 
-        // Alteração aqui: Chame seu API Route
+        // Chame seu API Route
         const response = await fetch(
           `${NEWS_API_PROXY_URL}/${CATEGORY_HEALTH}?country=${COUNTRY}`
         );
@@ -69,7 +68,7 @@ const Health: React.FC = () => {
 
           // Lógica de cache em desenvolvimento (salvando após buscar do proxy)
           if (process.env.NODE_ENV === "development") {
-            console.log(`📡 [${CATEGORY_HEALTH}] Buscando do Proxy e salvando no cache (sessionStorage).`);
+            console.log(`[${CATEGORY_HEALTH}] Buscando do Proxy e salvando no cache (sessionStorage).`);
             sessionStorage.setItem(cacheKey, JSON.stringify(filteredArticles));
           }
           setArticles(filteredArticles);
@@ -106,13 +105,13 @@ const Health: React.FC = () => {
       <h2 className={styles.newsCardTitle}>Saúde</h2>
       {articles.length > 0 ? (
         articles.map((article, index) => (
-          // Alteração aqui: Envolver o cartão em um link
+          // Envolver o cartão em um link
           <a
             key={index}
             href={article.url || "#"} // Link para o URL do artigo, ou '#' como fallback
-            target="_blank"           // Abre em uma nova aba
+            target="_blank"           
             rel="noopener noreferrer" // Medida de segurança para links externos
-            className={styles.newsCard} // Aplica o estilo do cartão ao link
+            className={styles.newsCard} 
           >
             <section className={styles.cardBody}>
               <Image
@@ -139,7 +138,7 @@ const Health: React.FC = () => {
           </a>
         ))
       ) : (
-        <p className={styles.noResultsMessage}>Nenhuma notícia de Saúde encontrada.</p> // Mensagem aprimorada
+        <p className={styles.noResultsMessage}>Nenhuma notícia de Saúde encontrada.</p> 
       )}
     </section>
   );

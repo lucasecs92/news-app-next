@@ -1,18 +1,17 @@
-// Science.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_SCIENCE } from "../utils/config";
 import styles from "../styles/NewsCard.module.css";
-import { timeSince, displayError } from "../utils/utils"; // Importe displayError
+import { timeSince, displayError } from "../utils/utils"; 
 
 interface Article {
   title: string;
   description: string | null;
   image: string;
   publishedAt: string;
-  url?: string; // Adicionado: URL para o artigo original
+  url?: string; // URL para o artigo original
 }
 
 const Science: React.FC = () => {
@@ -33,7 +32,7 @@ const Science: React.FC = () => {
         if (process.env.NODE_ENV === "development") {
           const cachedNews = sessionStorage.getItem(cacheKey);
           if (cachedNews) {
-            console.log(`🗂️ [${CATEGORY_SCIENCE}] Usando dados do cache (sessionStorage).`);
+            console.log(`[${CATEGORY_SCIENCE}] Usando dados do cache (sessionStorage).`);
             if (!ignore) {
               setArticles(JSON.parse(cachedNews));
               setLoading(false);
@@ -42,7 +41,7 @@ const Science: React.FC = () => {
           }
         }
 
-        // Alteração aqui: Chame seu API Route
+        // Chame seu API Route
         const response = await fetch(
           `${NEWS_API_PROXY_URL}/${CATEGORY_SCIENCE}?country=${COUNTRY}`
         );
@@ -69,7 +68,7 @@ const Science: React.FC = () => {
 
           // Lógica de cache em desenvolvimento (salvando após buscar do proxy)
           if (process.env.NODE_ENV === "development") {
-            console.log(`📡 [${CATEGORY_SCIENCE}] Buscando do Proxy e salvando no cache (sessionStorage).`);
+            console.log(`[${CATEGORY_SCIENCE}] Buscando do Proxy e salvando no cache (sessionStorage).`);
             sessionStorage.setItem(cacheKey, JSON.stringify(filteredArticles));
           }
           setArticles(filteredArticles);
@@ -82,7 +81,7 @@ const Science: React.FC = () => {
               ? err.message
               : `Não foi possível carregar as notícias de ${CATEGORY_SCIENCE}. Tente novamente mais tarde.`;
           setError(message);
-          displayError(message); // Usa a função displayError
+          displayError(message); 
         }
       } finally {
         if (!ignore) {
@@ -106,13 +105,13 @@ const Science: React.FC = () => {
       <h2 className={styles.newsCardTitle}>Ciência</h2>
       {articles.length > 0 ? (
         articles.map((article, index) => (
-          // Alteração aqui: Envolver o cartão em um link
+          // Envolver o cartão em um link
           <a
             key={index}
             href={article.url || "#"} // Link para o URL do artigo, ou '#' como fallback
             target="_blank"           // Abre em uma nova aba
             rel="noopener noreferrer" // Medida de segurança para links externos
-            className={styles.newsCard} // Aplica o estilo do cartão ao link
+            className={styles.newsCard} 
           >
             <section className={styles.cardBody}>
               <Image
@@ -139,7 +138,7 @@ const Science: React.FC = () => {
           </a>
         ))
       ) : (
-        <p className={styles.noResultsMessage}>Nenhuma notícia de Ciência encontrada.</p> // Mensagem aprimorada
+        <p className={styles.noResultsMessage}>Nenhuma notícia de Ciência encontrada.</p>
       )}
     </section>
   );

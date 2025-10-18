@@ -1,18 +1,17 @@
-// SearchResults.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "../styles/SearchResults.module.css";
-import { NEWS_API_PROXY_URL, COUNTRY } from "../utils/config"; // Importe NEWS_API_PROXY_URL e COUNTRY
-import { timeSince, displayError } from "../utils/utils"; // Assumindo que displayError está em utils
+import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_GENERAL } from "../utils/config";
+import { timeSince, displayError } from "../utils/utils";
 
 export interface Article {
   title: string;
   description: string | null;
   image: string;
   publishedAt: string;
-  url?: string; // Adicionado URL para o link do artigo original (API GNews geralmente fornece)
+  url?: string;
 }
 
 interface SearchResultsProps {
@@ -25,7 +24,6 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ query }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Se a query estiver vazia, não fazemos a busca
     if (!query.trim()) {
       setArticles([]);
       setLoading(false);
@@ -33,14 +31,13 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ query }) => {
       return;
     }
 
-    let ignore = false; // Flag para ignorar efeitos obsoletos (útil com React.StrictMode)
+    let ignore = false;
     const fetchArticles = async (searchTerm: string) => {
       setLoading(true);
       setError(null);
       try {
-        // Chamando seu próprio API Route para evitar problemas de CORS
         const response = await fetch(
-          `${NEWS_API_PROXY_URL}?q=${encodeURIComponent(searchTerm)}&country=${COUNTRY}`
+          `${NEWS_API_PROXY_URL}/${CATEGORY_GENERAL}?q=${encodeURIComponent(searchTerm)}&country=${COUNTRY}`
         );
 
         if (!response.ok) {
@@ -55,7 +52,6 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ query }) => {
         }
 
         if (!ignore) {
-          // Filtra artigos que não foram removidos, têm descrição e imagem
           const validArticles = data.articles.filter(
             (a: Article) => a.title !== "[Removed]" && a.description !== null && a.image
           );
@@ -69,7 +65,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ query }) => {
               ? err.message
               : "Erro desconhecido ao buscar notícias. Tente novamente mais tarde.";
           setError(message);
-          displayError(message); // Exibe o erro usando sua função utilitária
+          displayError(message);
         }
       } finally {
         if (!ignore) {
@@ -78,16 +74,15 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ query }) => {
       }
     };
 
-    // Adiciona um debounce para não fazer muitas requisições enquanto o usuário digita
     const debounceTimeout = setTimeout(() => {
       fetchArticles(query);
-    }, 500); // Espera 500ms após a última digitação
+    }, 500);
 
     return () => {
-      ignore = true; // Marca o efeito como obsoleto na limpeza
-      clearTimeout(debounceTimeout); // Limpa o timeout se o componente for desmontado ou a query mudar
+      ignore = true;
+      clearTimeout(debounceTimeout);
     };
-  }, [query]); // O efeito é re-executado quando a query muda
+  }, [query]);
 
   return (
     <section className={styles.searchResultsContainer}>
@@ -106,12 +101,11 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ query }) => {
         )}
 
         {!loading && !error && articles.map((article, index) => (
-          // Usar um link <a> para o artigo original é uma boa prática
           <a
             key={index}
-            href={article.url || "#"} // Link para a URL do artigo ou para # se não houver
-            target="_blank"           // Abre em uma nova aba
-            rel="noopener noreferrer" // Medida de segurança para links externos
+            href={article.url || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
             className={styles.resultSearchCard}
           >
             <section className={styles.resultCardBody}>
@@ -123,10 +117,8 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ query }) => {
                   title={article.title}
                   width={400}
                   height={250}
-                  // Removido 'unoptimized'. Deixe o Next.js otimizar as imagens.
-                  // Se houver problemas com imagens específicas, considere reavaliar.
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/default-news-image.jpg'; // Imagem de fallback
+                    (e.target as HTMLImageElement).src = '/default-news-image.jpg';
                     (e.target as HTMLImageElement).alt = 'Imagem não disponível';
                   }}
                 />
