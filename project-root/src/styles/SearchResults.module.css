@@ -8,6 +8,10 @@
   color: #343434;
 }
 
+.resultSearchCard {
+  text-decoration: none;
+}
+
 .resultSearchCard .resultCardBody {
   display: flex;
   flex-direction: row-reverse;
