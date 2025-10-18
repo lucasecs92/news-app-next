@@ -1,12 +1,14 @@
+// NewsAside.tsx (Exemplo)
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import Image from "next/image"; 
+import Image from "next/image";
 import styles from "../styles/NewsAside.module.css";
-import { API_URL, API_KEY, COUNTRY, CATEGORY_ENTERTAINMENT } from "../utils/config";
+import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_ENTERTAINMENT } from "../utils/config"; // Importe NEWS_API_PROXY_URL
 import { timeSince } from "../utils/utils";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 
+// ... (interface Article e ArticleCard permanecem as mesmas)
 interface Article {
   title: string;
   description: string | null;
@@ -15,7 +17,6 @@ interface Article {
   publishedAt: string;
 }
 
-// Componente ArticleCard modificado para aceitar width e height da imagem
 const ArticleCard = ({
   article,
   index,
@@ -47,8 +48,9 @@ const ArticleCard = ({
   imageWidth: number;
   imageHeight: number;
 }) => {
-  if (!article || article.title === "[Removed]" || article.description === null) return null;
-  
+  // Adiciona verificação para image (se gnews não retornar img, pode quebrar)
+  if (!article || article.title === "[Removed]" || article.description === null || !article.image) return null;
+
   const timeElapsed = timeSince(article.publishedAt);
 
   return (
@@ -61,6 +63,11 @@ const ArticleCard = ({
           className={imageClass}
           width={imageWidth}
           height={imageHeight}
+          // fallback src para evitar quebras se a imagem for inválida ou não carregar
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = '/default-news-image.jpg'; // Crie uma imagem default
+            (e.target as HTMLImageElement).alt = 'Image not available';
+          }}
         />
         <section className={`${styles.newsTextBase} ${textClasses.join(' ')}`}>
           <p className={authorClass}>{article.author || ""}</p>
@@ -76,6 +83,7 @@ const ArticleCard = ({
 export default function NewsAside() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true); // Adiciona estado de loading
   const baseCardsPerPage = 2;
   const [effectiveCardsPerPage, setEffectiveCardsPerPage] = useState(baseCardsPerPage);
   const [currentPage, setCurrentPage] = useState(0);
@@ -84,24 +92,34 @@ export default function NewsAside() {
 
   useEffect(() => {
     const fetchNews = async () => {
+      setLoading(true); // Inicia o loading
+      setError(null);    // Limpa erros anteriores
       try {
+        const cacheKey = `newsData_aside`;
+
         if (process.env.NODE_ENV === "development") {
-          const cacheKey = "newsData_aside";
           const cachedNews = sessionStorage.getItem(cacheKey);
           if (cachedNews) {
             console.log("🗂️ [NewsAside] Usando dados do cache (sessionStorage).");
             setArticles(JSON.parse(cachedNews));
+            setLoading(false);
             return;
           }
         }
-        const res = await fetch(`${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_ENTERTAINMENT}`);
-        if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
+
+        // ALTERAÇÃO AQUI: Chame seu API Route
+        const res = await fetch(`${NEWS_API_PROXY_URL}/${CATEGORY_ENTERTAINMENT}?country=${COUNTRY}`);
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ message: res.statusText }));
+          throw new Error(`Erro ao buscar notícias: ${errorData.message || res.statusText}`);
+        }
+
         const data = await res.json();
         if (data.articles && Array.isArray(data.articles)) {
-          const validArticles = data.articles.slice(0, 15);
+          const validArticles = data.articles.filter((a: Article) => a.image).slice(0, 15); // Garante que a imagem exista
           if (process.env.NODE_ENV === "development") {
-             const cacheKey = "newsData_aside";
-             console.log("📡 [NewsAside] Buscando da API e salvando no cache (sessionStorage).");
+             console.log("📡 [NewsAside] Buscando do Proxy e salvando no cache (sessionStorage).");
              sessionStorage.setItem(cacheKey, JSON.stringify(validArticles));
           }
           setArticles(validArticles);
@@ -110,7 +128,13 @@ export default function NewsAside() {
         }
       } catch (err) {
         console.error("Erro ao buscar notícias:", err);
-        setError("Erro ao buscar notícias.");
+        const message =
+          err instanceof Error
+            ? err.message
+            : "Erro ao buscar notícias. Por favor, tente novamente mais tarde.";
+        setError(message);
+      } finally {
+        setLoading(false); // Finaliza o loading
       }
     };
     fetchNews();
@@ -140,9 +164,15 @@ export default function NewsAside() {
 
   return (
     <section>
+      {loading && articles.length === 0 && (
+        <p className={styles.loadingMessage}>Carregando notícias...</p>
+      )}
       {error && <p className={styles.errorMessage}>{error}</p>}
-      {articles.length === 0 && !error && <p className={styles.loadingMessage}>Carregando notícias...</p>}
-      
+
+      {articles.length === 0 && !loading && !error && (
+        <p className={styles.errorMessage}>Nenhuma notícia encontrada na barra lateral.</p>
+      )}
+
       {articles.length > 0 && articles[0] && (
         <ArticleCard
           article={articles[0]}
@@ -154,7 +184,7 @@ export default function NewsAside() {
           showDescription={true}
         />
       )}
-      
+
       {carouselArticles.length > 0 && (
         <section className={`${styles.carouselContainer} ${styles.newsCardBase}`}>
           <section ref={carouselViewportRef} className={styles.carouselViewport}>
@@ -187,7 +217,7 @@ export default function NewsAside() {
           </section>
         </section>
       )}
-      
+
       {articles.length > 5 && articles[5] && (
         <ArticleCard
           article={articles[5]}
@@ -223,7 +253,7 @@ export default function NewsAside() {
           })}
         </section>
       )}
-      
+
       {articles.length > 10 && articles.slice(10).map((article, indexInSlice) => {
         const originalIndex = 10 + indexInSlice;
         return (

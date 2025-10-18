@@ -1,16 +1,18 @@
+// SearchResults.tsx
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "../styles/SearchResults.module.css";
-import { API_URL, API_KEY } from "../utils/config";
-import { timeSince } from "../utils/utils";
+import { NEWS_API_PROXY_URL, COUNTRY } from "../utils/config"; // Importe NEWS_API_PROXY_URL e COUNTRY
+import { timeSince, displayError } from "../utils/utils"; // Assumindo que displayError está em utils
 
 export interface Article {
   title: string;
   description: string | null;
   image: string;
   publishedAt: string;
+  url?: string; // Adicionado URL para o link do artigo original (API GNews geralmente fornece)
 }
 
 interface SearchResultsProps {
@@ -21,59 +23,97 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ query }) => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
-  // Ref para controlar o efeito e evitar chamadas duplicadas em desenvolvimento (React.StrictMode)
-  const effectRan = useRef(false);
 
   useEffect(() => {
+    // Se a query estiver vazia, não fazemos a busca
+    if (!query.trim()) {
+      setArticles([]);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
+    let ignore = false; // Flag para ignorar efeitos obsoletos (útil com React.StrictMode)
     const fetchArticles = async (searchTerm: string) => {
-      if (!searchTerm.trim()) return;
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${API_URL}?q=${encodeURIComponent(searchTerm)}&token=${API_KEY}`);
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-        const data = await response.json();
-        if (!Array.isArray(data.articles)) throw new Error("Resposta inválida da API.");
-        const validArticles = data.articles.filter(
-          (a: Article) => a.title !== "[Removed]" && a.description !== null
+        // Chamando seu próprio API Route para evitar problemas de CORS
+        const response = await fetch(
+          `${NEWS_API_PROXY_URL}?q=${encodeURIComponent(searchTerm)}&country=${COUNTRY}`
         );
-        setArticles(validArticles);
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ message: response.statusText }));
+          throw new Error(`Erro ao buscar resultados: ${errorData.message || response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        if (!Array.isArray(data.articles)) {
+          throw new Error("Resposta inválida da API.");
+        }
+
+        if (!ignore) {
+          // Filtra artigos que não foram removidos, têm descrição e imagem
+          const validArticles = data.articles.filter(
+            (a: Article) => a.title !== "[Removed]" && a.description !== null && a.image
+          );
+          setArticles(validArticles);
+        }
       } catch (err) {
-        console.error("Erro ao buscar notícias:", err);
-        setError("Erro ao buscar notícias.");
+        if (!ignore) {
+          console.error("Erro ao buscar notícias:", err);
+          const message =
+            err instanceof Error
+              ? err.message
+              : "Erro desconhecido ao buscar notícias. Tente novamente mais tarde.";
+          setError(message);
+          displayError(message); // Exibe o erro usando sua função utilitária
+        }
       } finally {
-        setLoading(false);
+        if (!ignore) {
+          setLoading(false);
+        }
       }
     };
-    
-    // Em modo de desenvolvimento, o StrictMode monta, desmonta e remonta o componente.
-    // Esta lógica garante que a API seja chamada apenas uma vez.
-    if (effectRan.current === true || process.env.NODE_ENV !== 'development') {
-        fetchArticles(query);
-    }
+
+    // Adiciona um debounce para não fazer muitas requisições enquanto o usuário digita
+    const debounceTimeout = setTimeout(() => {
+      fetchArticles(query);
+    }, 500); // Espera 500ms após a última digitação
 
     return () => {
-        // Na primeira renderização (em dev), a cleanup function roda e define o ref como true.
-        // Na segunda renderização (remontagem), a condição do if acima é satisfeita e a API é chamada.
-        effectRan.current = true;
+      ignore = true; // Marca o efeito como obsoleto na limpeza
+      clearTimeout(debounceTimeout); // Limpa o timeout se o componente for desmontado ou a query mudar
     };
-  }, [query]);
+  }, [query]); // O efeito é re-executado quando a query muda
 
   return (
-    // Este container agora preenche o espaço da tag <main>
     <section className={styles.searchResultsContainer}>
       <section className={styles.searchResultsHeader}>
         <h2 className={styles.searchResultsCardTitle}>Resultados para: {query}</h2>
       </section>
 
       <section className={styles.searchResultsContent}>
-        {loading && <p className={styles.loadingMessage}>Carregando resultados...</p>}
+        {loading && <p className={styles.loadingMessage}>Carregando resultados para {query}...</p>}
         {error && <p className={styles.errorMessage}>{error}</p>}
-        {!loading && !error && articles.length === 0 && <p>Nenhum resultado encontrado.</p>}
+        {!loading && !error && articles.length === 0 && query.trim() && (
+          <p className={styles.noResultsMessage}>Nenhum resultado encontrado para {query}.</p>
+        )}
+        {!loading && !error && articles.length === 0 && !query.trim() && (
+          <p className={styles.noResultsMessage}>Digite algo para iniciar a busca.</p>
+        )}
 
         {!loading && !error && articles.map((article, index) => (
-          <section key={index} className={styles.resultSearchCard}>
+          // Usar um link <a> para o artigo original é uma boa prática
+          <a
+            key={index}
+            href={article.url || "#"} // Link para a URL do artigo ou para # se não houver
+            target="_blank"           // Abre em uma nova aba
+            rel="noopener noreferrer" // Medida de segurança para links externos
+            className={styles.resultSearchCard}
+          >
             <section className={styles.resultCardBody}>
               {article.image && (
                 <Image
@@ -83,7 +123,12 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ query }) => {
                   title={article.title}
                   width={400}
                   height={250}
-                  unoptimized
+                  // Removido 'unoptimized'. Deixe o Next.js otimizar as imagens.
+                  // Se houver problemas com imagens específicas, considere reavaliar.
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/default-news-image.jpg'; // Imagem de fallback
+                    (e.target as HTMLImageElement).alt = 'Imagem não disponível';
+                  }}
                 />
               )}
               <section className={styles.resultNewsText}>
@@ -92,7 +137,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ query }) => {
               </section>
               <p className={styles.resultNewsTimePublished}>{timeSince(article.publishedAt)}</p>
             </section>
-          </section>
+          </a>
         ))}
       </section>
     </section>

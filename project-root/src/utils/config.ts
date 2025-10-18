@@ -1,6 +1,8 @@
-export const API_URL: string = "https://gnews.io/api/v4/top-headlines";
-export const API_KEY: string = process.env.NEXT_PUBLIC_GNEWS_API_KEY as string;
-export const COUNTRY: string = "us";
+// utils/config.ts
+
+export const NEWS_API_PROXY_URL: string = "/api/news"; // Seu novo endpoint de proxy
+export const COUNTRY: string = "us"; // Ou "br"
+// ... (outras categorias)
 export const CATEGORY_GENERAL: string = "general";
 export const CATEGORY_BUSINESS: string = "business";
 export const CATEGORY_ENTERTAINMENT: string = "entertainment";

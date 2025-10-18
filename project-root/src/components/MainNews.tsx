@@ -1,9 +1,10 @@
+// MainNews.tsx (Exemplo)
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image"; 
+import Image from "next/image";
 import styles from "../styles/MainNews.module.css";
-import { API_URL, API_KEY, COUNTRY, CATEGORY_GENERAL } from "../utils/config";
+import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_GENERAL } from "../utils/config"; // Importe NEWS_API_PROXY_URL
 import { timeSince, displayError } from "../utils/utils";
 
 export interface Article {
@@ -16,25 +17,38 @@ export interface Article {
 export const MainNews: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true); // Adiciona estado de loading
 
   useEffect(() => {
     const getNews = async () => {
+      setLoading(true); // Inicia o loading
+      setError(null);    // Limpa erros anteriores
       try {
-        if (process.env.NODE_ENV === "development") {
-          const cacheKey = "newsData_general";
-          const cachedNews = sessionStorage.getItem(cacheKey);
+        const cacheKey = `newsData_${CATEGORY_GENERAL}`;
 
+        // No ambiente de produção, você pode considerar ter seu API Route
+        // também gerenciando um cache mais sofisticado, mas para o cliente,
+        // o sessionStorage ainda pode ser útil para reduzir chamadas ao proxy.
+        // No entanto, é importante que o cache seja invalidado ou atualizado.
+        if (process.env.NODE_ENV === "development") {
+          const cachedNews = sessionStorage.getItem(cacheKey);
           if (cachedNews) {
             console.log("[MainNews] Usando dados do cache (sessionStorage).");
             setArticles(JSON.parse(cachedNews));
+            setLoading(false);
             return;
           }
         }
 
+        // ALTERAÇÃO AQUI: Chame seu API Route
         const response = await fetch(
-          `${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_GENERAL}`
+          `${NEWS_API_PROXY_URL}/${CATEGORY_GENERAL}?country=${COUNTRY}`
         );
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ message: response.statusText }));
+          throw new Error(`Erro ao buscar notícias: ${errorData.message || response.statusText}`);
+        }
 
         const data = await response.json();
 
@@ -42,12 +56,11 @@ export const MainNews: React.FC = () => {
           throw new Error("Resposta inválida da API");
 
         const validArticles = data.articles.filter(
-          (a: Article) => a.title !== "[Removed]" && a.description
+          (a: Article) => a.title !== "[Removed]" && a.description && a.image // Garante que a imagem também exista
         );
 
         if (process.env.NODE_ENV === "development") {
-           const cacheKey = "newsData_general";
-           console.log("📡 [MainNews] Buscando da API e salvando no cache (sessionStorage).");
+           console.log("📡 [MainNews] Buscando do Proxy e salvando no cache (sessionStorage).");
            sessionStorage.setItem(cacheKey, JSON.stringify(validArticles));
         }
 
@@ -60,18 +73,24 @@ export const MainNews: React.FC = () => {
             : "Erro ao buscar notícias. Por favor, tente novamente mais tarde.";
         setError(message);
         displayError(message);
+      } finally {
+        setLoading(false); // Finaliza o loading
       }
     };
 
     getNews();
   }, []);
 
+  if (loading && articles.length === 0) { // Mostra loading apenas se não houver artigos e estiver carregando
+    return <p className={styles.loadingMessage}>Carregando notícias principais...</p>;
+  }
+
   if (error) return <p className={styles.errorMessage}>{error}</p>;
 
   return (
     <section id="main-news">
-       {articles.length === 0 && !error && (
-        <p className={styles.loadingMessage}>Carregando notícias principais...</p>
+      {articles.length === 0 && !loading && !error && (
+        <p className={styles.errorMessage}>Nenhuma notícia encontrada.</p> // Caso não haja artigos e não esteja carregando
       )}
       {articles.map((article, index) => (
         <section
@@ -86,9 +105,9 @@ export const MainNews: React.FC = () => {
                 alt={article.title}
                 title={article.title}
                 className={styles.mainNewsImg}
-                width={500} // Valor de exemplo, ajuste conforme seu design
-                height={300} // Valor de exemplo, ajuste conforme seu design
-                priority={index < 3} // Opcional: Carrega as 3 primeiras imagens com prioridade
+                width={500}
+                height={300}
+                priority={index < 3}
               />
             )}
             <section className={styles.mainNewsText}>

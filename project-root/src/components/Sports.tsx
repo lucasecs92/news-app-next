@@ -1,16 +1,18 @@
+// Sports.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image"; 
-import { API_URL, API_KEY, COUNTRY, CATEGORY_SPORTS } from "../utils/config";
+import Image from "next/image";
+import { NEWS_API_PROXY_URL, COUNTRY, CATEGORY_SPORTS } from "../utils/config";
 import styles from "../styles/NewsCard.module.css";
-import { timeSince } from "../utils/utils";
+import { timeSince, displayError } from "../utils/utils"; // Importe displayError
 
 interface Article {
   title: string;
   description: string | null;
   image: string;
   publishedAt: string;
+  url?: string; // Adicionado: URL para o artigo original
 }
 
 const Sports: React.FC = () => {
@@ -19,39 +21,82 @@ const Sports: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let ignore = false; // Flag para ignorar efeitos obsoletos (React.StrictMode)
+
     const fetchSportsNews = async () => {
       setLoading(true);
       setError(null);
       try {
+        const cacheKey = `newsData_${CATEGORY_SPORTS}`;
+
+        // Lógica de cache em desenvolvimento
         if (process.env.NODE_ENV === "development") {
-          const cacheKey = "newsData_sports";
           const cachedNews = sessionStorage.getItem(cacheKey);
           if (cachedNews) {
-            console.log("[Sports] Usando dados do cache (sessionStorage).");
-            setArticles(JSON.parse(cachedNews));
-            setLoading(false);
+            console.log(`🗂️ [${CATEGORY_SPORTS}] Usando dados do cache (sessionStorage).`);
+            if (!ignore) {
+              setArticles(JSON.parse(cachedNews));
+              setLoading(false);
+            }
             return;
           }
         }
-        const response = await fetch(`${API_URL}?token=${API_KEY}&country=${COUNTRY}&topic=${CATEGORY_SPORTS}`);
-        if (!response.ok) throw new Error(`Erro HTTP! status: ${response.status}`);
-        const data = await response.json();
-        const filteredArticles = data.articles.filter((article: Article) => article.title !== "[Removed]" && article.description !== null);
-        if (process.env.NODE_ENV === "development") {
-          const cacheKey = "newsData_sports";
-          console.log("📡 [Sports] Buscando da API e salvando no cache (sessionStorage).");
-          sessionStorage.setItem(cacheKey, JSON.stringify(filteredArticles));
+
+        // Alteração aqui: Chame seu API Route
+        const response = await fetch(
+          `${NEWS_API_PROXY_URL}/${CATEGORY_SPORTS}?country=${COUNTRY}`
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ message: response.statusText }));
+          throw new Error(`Erro HTTP! status: ${response.status} - ${errorData.message || response.statusText}`);
         }
-        setArticles(filteredArticles);
+
+        const data = await response.json();
+
+        if (!Array.isArray(data.articles)) {
+          throw new Error("Resposta inválida da API.");
+        }
+
+        if (!ignore) {
+          // Filtra artigos que não foram removidos, têm descrição e imagem
+          const filteredArticles = data.articles.filter(
+            (article: Article) =>
+              article.title !== "[Removed]" &&
+              article.description !== null &&
+              article.image // Garante que o artigo tem uma imagem
+          );
+
+          // Lógica de cache em desenvolvimento (salvando após buscar do proxy)
+          if (process.env.NODE_ENV === "development") {
+            console.log(`📡 [${CATEGORY_SPORTS}] Buscando do Proxy e salvando no cache (sessionStorage).`);
+            sessionStorage.setItem(cacheKey, JSON.stringify(filteredArticles));
+          }
+          setArticles(filteredArticles);
+        }
       } catch (err) {
-        console.error("Erro ao buscar notícias de esportes: ", err);
-        setError("Não foi possível carregar as notícias de Esportes.");
+        if (!ignore) {
+          console.error(`Erro ao buscar notícias de ${CATEGORY_SPORTS}: `, err);
+          const message =
+            err instanceof Error
+              ? err.message
+              : `Não foi possível carregar as notícias de ${CATEGORY_SPORTS}. Tente novamente mais tarde.`;
+          setError(message);
+          displayError(message); // Usa a função displayError
+        }
       } finally {
-        setLoading(false);
+        if (!ignore) {
+          setLoading(false);
+        }
       }
     };
+
     fetchSportsNews();
-  }, []);
+
+    return () => {
+      ignore = true; // Marca o efeito como obsoleto na limpeza
+    };
+  }, []); // Dependência vazia, executa uma vez ao montar
 
   if (loading) return <p className={styles.loadingMessage}>Carregando notícias de Esportes...</p>;
   if (error) return <p className={styles.errorMessage}>{error}</p>;
@@ -61,15 +106,27 @@ const Sports: React.FC = () => {
       <h2 className={styles.newsCardTitle}>Esportes</h2>
       {articles.length > 0 ? (
         articles.map((article, index) => (
-          <section key={index} className={styles.newsCard}>
+          // Alteração aqui: Envolver o cartão em um link
+          <a
+            key={index}
+            href={article.url || "#"} // Link para o URL do artigo, ou '#' como fallback
+            target="_blank"           // Abre em uma nova aba
+            rel="noopener noreferrer" // Medida de segurança para links externos
+            className={styles.newsCard} // Aplica o estilo do cartão ao link
+          >
             <section className={styles.cardBody}>
               <Image
-                src={article.image || "https://via.placeholder.com/150"}
+                src={article.image} // Não precisa de fallback aqui se já filtramos por `article.image`
                 className={styles.newsImg}
                 alt={article.title}
                 title={article.title}
                 width={300}
                 height={300}
+                onError={(e) => {
+                  // Fallback para imagem local caso a URL da imagem falhe ao carregar
+                  (e.target as HTMLImageElement).src = '/default-news-image.jpg';
+                  (e.target as HTMLImageElement).alt = 'Imagem não disponível';
+                }}
               />
               <section className={styles.newsText}>
                 <h2 className={styles.navNewsTitle}>{article.title}</h2>
@@ -79,10 +136,10 @@ const Sports: React.FC = () => {
                 </p>
               </section>
             </section>
-          </section>
+          </a>
         ))
       ) : (
-        <p>Nenhuma notícia de Esportes encontrada.</p>
+        <p className={styles.noResultsMessage}>Nenhuma notícia de Esportes encontrada.</p> // Mensagem aprimorada
       )}
     </section>
   );
